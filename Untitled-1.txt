@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.5.6.12127",
+      "templateHash": "1532257987028557958"
+    }
+  },
+  "parameters": {
+    "targetMG": {
+      "type": "string",
+      "defaultValue": "Test",
+      "metadata": {
+        "description": "Target Management Group"
+      }
+    },
+    "targetSubID": {
+      "type": "string",
+      "defaultValue": "7ac51792-8ea1-4ea8-be56-eb515e42aadf",
+      "metadata": {
+        "description": "Target Management Group"
+      }
+    }
+  },
+  "variables": {
+    "DefmgScope": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('targetMG'))]",
+    "AssignmentScope": "[concat('Microsoft.Management/managementGroups/subscriptions/', parameters('targetSubID'))]",
+    "policyDefinitionName": "Secure transfer to storage accounts"
+  },
+  "resources": [
+    {
+            "type": "Microsoft.Authorization/policyDefinitions",
+            "name": "[variables('policyDefinitionName')]",
+            "scope": "[variables('DefmgScope')]",
+            "apiVersion": "2021-06-01",
+            "properties": {
+                "displayName": "Secure transfer to storage accounts should be enabled",
+                "policyType": "Custom",
+                "mode": "Indexed",
+                "description": "Audit requirement of Secure transfer in your storage account. Secure transfer is an option that forces your storage account to accept requests only from secure connections (HTTPS). Use of HTTPS ensures authentication between the server and the service and protects data in transit from network layer attacks such as man-in-the-middle, eavesdropping, and session-hijacking",
+                "metadata": {
+                    "version": "2.0.0",
+                    "category": "Storage"
+                },
+                "parameters": {
+
+                },
+                "policyRule": {
+                    "if": {
+                        "allOf": [
+                            {
+                                "field": "type",
+                                "equals": "Microsoft.Storage/storageAccounts"
+                            },
+                            {
+                                "anyOf": [
+                                    {
+                                        "allOf": [
+                                            {
+                                                "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                                                "exists": "false"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                                        "equals": "false"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "then": {
+                        "effect": "Modify",
+                        "details": {
+                            "roleDefinitionIds": [
+                                "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                            ],
+                            "conflictEffect": "Audit",
+                            "operations": [
+                                {
+                                    "operation": "addOrReplace",
+                                    "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                                    "value": true
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+    {
+      "type": "Microsoft.Authorization/policyAssignments",
+      "apiVersion": "2020-03-01",
+      "name": "Secure transfer to storage accounts",
+      "properties": {
+        "scope": "[variables('AssignmentScope')]",
+        "policyDefinitionId": "[extensionResourceId(variables('mgScope'), 'Microsoft.Authorization/policyDefinitions', variables('policyDefinitionName'))]"
+      },
+      "dependsOn": [
+        "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyDefinitions', variables('policyDefinitionName'))]"
+      ]
+    }
+  ]
+}

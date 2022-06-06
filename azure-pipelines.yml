@@ -1,0 +1,71 @@
+# AUTHOR/S: Marc Kean
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+parameters:
+- name: ts_resourcegroupname
+  displayName: Template Specs Resource Group Name
+  type: string
+  default: 'TemplateSpecs'
+- name: location
+  displayName: Location
+  type: string
+  default: 'australiaeast'
+- name: tenantID
+  displayName: Tenant ID
+  type: string
+  default: '8efecb12-cbaa-4612-b850-e6a68c14d336'
+
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+# A pipeline is made up of one or more stages. A pipeline can deploy to one or more environments.
+# A stage is a way of organizing jobs in a pipeline and each stage can have one or more jobs.
+
+steps: # A step can be a task or script and is the smallest building block of a pipeline
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+# Task to copy templates to template specs
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'HomeAffairsSandpit3'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az group create \
+        --name ${{ parameters.ts_resourcegroupname }} \
+        --location ${{ parameters.location }}
+      az ts create --template-file '$(Build.SourcesDirectory)/artifacts/policyAssignments.json' --resource-group ${{ parameters.ts_resourcegroupname }} --name 'TS_policyAssignments' --version 1.0.0
+      az ts create --template-file '$(Build.SourcesDirectory)/artifacts/policyDefinitions.json' --resource-group ${{ parameters.ts_resourcegroupname }} --name 'TS_policyDefinitions' --version 1.0.0
+
+# Deployment for parent template
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Management Group'
+    azureResourceManagerConnection: 'HomeAffairsSandpit3'
+    location: 'Australia East'
+    templateLocation: 'Linked artifact'
+    csmFile: 'deploy.json'
+    deploymentMode: 'Incremental'
+    overrideParameters: -TS_resourceGroupName ${{ parameters.ts_resourcegroupname }}
+
+#- task: AzurePowerShell@5
+#  displayName: Deploy Azure Resources
+#  name: deployManagementGroups
+#  inputs:
+#    azurePowerShellVersion: LatestVersion
+#    azureSubscription: 'HomeAffairsSandpit3'
+#    ScriptType: FilePath
+#    ScriptPath: ./deploy-AzureResources.ps1
+#    scriptArguments:
+#      -ManagementGroupId ${{ parameters.tenantID }} `
+#      -location ${{ parameters.location }} `
+#      -ts_resourcegroupname ${{ parameters.ts_resourcegroupname }}

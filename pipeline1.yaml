@@ -1,0 +1,47 @@
+# 
+# SUMMARY: Pipeline to zip and copy custom script extension files to an Azure Storage Account
+# DESCRIPTION: The following components will be required parameters in this deployment
+#     storageAccountName
+#     blobContainer
+#     subscriptionName - Requires an ARM service connection
+# AUTHOR/S: asaikovski
+# VERSION: 1.0.1
+# VERSION HISTORY:  
+#  1.0.0 - Initial Version
+#  1.0.1 - Added custom script extension settings
+name: 'Deploy_Windows_SOE_Custom_Script'
+parameters:
+- name: storageAccountName
+  displayName: Destination Storage Account Name
+  type: string
+  default: 'tpgcommonstorage'
+- name: blobContainer
+  displayName: Destination Storage Account Name
+  type: string
+  default: 'scripts'
+- name: subscriptionName
+  displayName: Target Subscription
+  type: string
+  default: 'Telstra POC Test'
+trigger:
+- none
+pool:
+  vmImage: windows-2019
+steps:
+- task: CopyFiles@2
+  displayName: 'Copy files to Temp Folder'
+  inputs:
+    SourceFolder: $(Build.SourcesDirectory)/artifacts
+    Contents: '*.json'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/artifacts'
+    OverWrite: true
+##Dont upgrade to AzureFileCopy@4 as it is broken
+- task: AzureFileCopy@3
+  displayName: 'Copy to Azure Storage'
+  inputs:
+    SourcePath: '$(Build.ArtifactStagingDirectory)/artifacts'
+    azureSubscription: ${{ parameters.subscriptionName }}
+    Destination: 'AzureBlob'
+    storage: ${{ parameters.storageAccountName }}
+    ContainerName: ${{ parameters.blobContainer }}
+    additionalArgumentsForBlobCopy: '/*.json /Y' # Pattern of files to copy.

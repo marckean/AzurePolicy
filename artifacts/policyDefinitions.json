@@ -1,0 +1,378 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+        "_generator": {
+            "name": "bicep",
+            "version": "0.5.6.12127",
+            "templateHash": "1532257987028557958"
+        }
+    },
+    "parameters": {
+        "policyDefinitionName01": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name 1"
+            }
+        },
+        "policyDefinitionDisplayName01": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Display Name 1"
+            }
+        },
+        "policyDefinitionName02": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name 2"
+            }
+        },
+        "policyDefinitionDisplayName02": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Display Name 2"
+            }
+        },
+        "policyDefinitionName03": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name 3"
+            }
+        },
+        "policyDefinitionDisplayName03": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Display Name 3"
+            }
+        },
+        "policyDefinitionName04": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name 4"
+            }
+        },
+        "policyDefinitionDisplayName04": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Display Name 4"
+            }
+        },
+        "builtInRoleType": {
+            "type": "string",
+            "allowedValues": [
+                "Owner",
+                "Contributor",
+                "Reader"
+            ],
+            "metadata": {
+                "description": "Policy Definition ID (Contributor)"
+            }
+        }
+    },
+    "variables": {
+        "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+        "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+        "policies": {
+            "policyDefinitions": [
+                {
+                    "properties": {
+                        "displayName": "[parameters('policyDefinitionDisplayName01')]",
+                        "policyType": "Custom",
+                        "mode": "Indexed",
+                        "description": "Audit requirement of Secure transfer in your storage account. Secure transfer is an option that forces your storage account to accept requests only from secure connections (HTTPS). Use of HTTPS ensures authentication between the server and the service and protects data in transit from network layer attacks such as man-in-the-middle, eavesdropping, and session-hijacking",
+                        "metadata": {
+                            "version": "2.0.2",
+                            "category": "Storage"
+                        },
+                        "parameters": {
+                        },
+                        "policyRule": { //https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure
+                            "if": {
+                                "allOf": [ //not, allOf, anyOf
+                                    {
+                                        "field": "type",
+                                        "equals": "Microsoft.Storage/storageAccounts" //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
+                                    },
+                                    {
+                                        "anyOf": [
+                                            {
+                                                "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                                                "equals": false //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
+                                            },
+                                            {
+                                                "not": {
+                                                    "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
+                                                    "equals": "TLS1_2" //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
+                                                }                                              
+                                            },
+                                            {
+                                                "field": "Microsoft.Storage/storageAccounts/allowBlobPublicAccess",
+                                                "equals": false //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "then": {
+                                "effect": "modify",
+                                "details": {
+                                    "roleDefinitionIds": [ "[variables(parameters('builtInRoleType'))]" ],
+                                    "conflictEffect": "audit",
+                                    "operations": [
+                                        {
+                                            "operation": "addOrReplace",
+                                            "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                                            "value": true
+                                        },
+                                        {
+                                            "operation": "addOrReplace",
+                                            "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
+                                            "value": "TLS1_2"
+                                        },
+                                        {
+                                            "operation": "addOrReplace",
+                                            "field": "Microsoft.Storage/storageAccounts/allowBlobPublicAccess",
+                                            "value": false
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "name": "[parameters('policyDefinitionName01')]"
+                },
+                {
+                    "properties": {
+                        "displayName": "[parameters('policyDefinitionDisplayName02')]",
+                        "policyType": "Custom",
+                        "mode": "All", //all: evaluate resource groups, subscriptions, and all resource types. indexed: only evaluate resource types that support tags and location
+                        "description": "Set to Deny any network security rules that allow either port 3389 or port 22 from the internet",
+                        "metadata": {
+                            "version": "2.1.0",
+                            "category": "Network"
+                        },
+                        "parameters": {
+                        },
+                        "policyRule": { //https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure
+                            "if": {
+                                "allOf": [
+                                    {
+                                        "field": "type",
+                                        "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+                                    },
+                                    {
+                                        "allOf": [ //not, allOf, anyOf
+                                            {
+                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                                                "match": "Inbound"
+                                            },
+                                            {
+                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                                                "equals": "Allow"
+                                            },
+                                            {
+                                                "anyOf": [ // Destination ports
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                                        "equals": "22"
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                                        "equals": "3389"
+                                                    },
+                                                    { // dashes, hyphens
+                                                        "value": "[[if(and(not(empty(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'))), contains(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'),'-')), and(lessOrEquals(int(first(split(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'), '-'))),3389),greaterOrEquals(int(last(split(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'), '-'))),3389)), 'false')]",
+                                                        "equals": "true"
+                                                    },
+                                                    { // dashes, hyphens
+                                                        "value": "[[if(and(not(empty(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'))), contains(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'),'-')), and(lessOrEquals(int(first(split(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'), '-'))),22),greaterOrEquals(int(last(split(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'), '-'))),22)), 'false')]",
+                                                        "equals": "true"
+                                                    },
+                                                    { // Array of ports
+                                                        "count": {
+                                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                                            "where": {
+                                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                                                "equals": "3389"
+                                                            }
+                                                        },
+                                                        "greater": 0
+                                                    },
+                                                    { // Array of ports
+                                                        "count": {
+                                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                                            "where": {
+                                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                                                "equals": "22"
+                                                            }
+                                                        },
+                                                        "greater": 0
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "anyOf": [ // Source address
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                                        "equals": "*"
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                                        "equals": "Internet"
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                                                        "equals": "*"
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                                                        "equals": "Internet"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "then": {
+                                "effect": "modify",
+                                "details": {
+                                    "roleDefinitionIds": [ "[variables(parameters('builtInRoleType'))]" ],
+                                    "conflictEffect": "audit",
+                                    "operations": [
+                                        {
+                                            "operation": "addOrReplace",
+                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                                            "value": "Deny"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "name": "[parameters('policyDefinitionName02')]"
+                },
+                {
+                    "properties": {
+                        "displayName": "[parameters('policyDefinitionDisplayName03')]",
+                        "policyType": "Custom",
+                        "mode": "All",
+                        "description": "Deny deployment of a custom role which has the same permissions as the built-in owner role",
+                        "metadata": {
+                            "version": "2.0.0",
+                            "category": "RBAC"
+                        },
+                        "policyRule": {
+                            "if": {
+                                "allOf": [
+                                    {
+                                        "field": "type",
+                                        "equals": "Microsoft.Authorization/roleDefinitions"
+                                    },
+                                    {
+                                        "field": "Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]",
+                                        "equals": "*"
+                                    },
+                                    {
+                                        "field": "Microsoft.Authorization/roleDefinitions/type",
+                                        "notEquals": "BuiltInRole"
+                                    }
+                                ]
+                            },
+                            "then": {
+                                "effect": "deny"
+                            }
+                        },
+                        "parameters": {}
+                    },
+                    "name": "[parameters('policyDefinitionName03')]"
+                },
+                {
+                    "properties": {
+                        "displayName": "[parameters('policyDefinitionDisplayName04')]",
+                        "policyType": "Custom",
+                        "mode": "All",
+                        "description": "Azure KeyVault settings for desired KeyVaults",
+                        "metadata": {
+                            "version": "2.0.0",
+                            "category": "Security"
+                        },
+                        "policyRule": {
+                            "if": {
+                                "anyOf": [
+                                    {
+                                        "allOf": [
+                                            {
+                                                "field": "type",
+                                                "equals": "Microsoft.KeyVault/vaults"
+                                            },
+                                            {
+                                                "field": "Microsoft.KeyVault/vaults/enableSoftDelete",
+                                                "notEquals": true
+                                            },
+                                            {
+                                                "field": "Microsoft.KeyVault/vaults/SoftDeleteRetentionInDays",
+                                                "notEquals": 90
+                                            },
+                                            {
+                                                "field": "Microsoft.KeyVault/vaults/enableRbacAuthorization",
+                                                "notEquals": true
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "then": {
+                                "effect": "modify",
+                                "details": {
+                                    "roleDefinitionIds": [ "[variables(parameters('builtInRoleType'))]" ],
+                                    "conflictEffect": "audit",
+                                    "operations": [
+                                        {
+                                            "operation": "addOrReplace",
+                                            "field": "Microsoft.KeyVault/vaults/enableSoftDelete",
+                                            "value": true
+                                        },
+                                        {
+                                            "operation": "addOrReplace",
+                                            "field": "Microsoft.KeyVault/vaults/SoftDeleteRetentionInDays",
+                                            "value": 90
+                                        },
+                                        {
+                                            "operation": "addOrReplace",
+                                            "field": "Microsoft.KeyVault/vaults/enableRbacAuthorization",
+                                            "value": true
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "parameters": {}
+                    },
+                    "name": "[parameters('policyDefinitionName04')]"
+                }
+            ]
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Authorization/policyDefinitions",
+            "name": "[variables('policies').policyDefinitions[copyIndex()].name]",
+            "apiVersion": "2019-09-01",
+            "copy": {
+                "name": "policyDefinitionCopy",
+                "count": "[length(variables('policies').policyDefinitions)]"
+            },
+            "properties": {
+                "displayName": "[variables('policies').policyDefinitions[copyIndex()].properties.displayName]",
+                "description": "[variables('policies').policyDefinitions[copyIndex()].properties.description]",
+                "mode": "[variables('policies').policyDefinitions[copyIndex()].properties.mode]",
+                "policyType": "Custom",
+                "parameters": "[variables('policies').policyDefinitions[copyIndex()].properties.parameters]",
+                "policyRule": "[variables('policies').policyDefinitions[copyIndex()].properties.policyRule]",
+                "metadata": "[variables('policies').policyDefinitions[copyIndex()].properties.metadata]"
+            }
+        }
+    ]
+}

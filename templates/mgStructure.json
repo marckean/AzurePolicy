@@ -1,0 +1,17 @@
+{
+    "8efecb12-cbaa-4612-b850-e6a68c14d336": [ // Replace with tenant Id
+        {
+            "id": "8efecb12-cbaa-4612-b850-e6a68c14d336", // Replace with the proposed Id for the top level management group
+            "displayName": "Tenant Root Group", // Replace with the displayname for the top level management group
+            "children": [
+                {
+                    "id": "Test",
+                    "displayName": "Test",
+                    "children": [
+
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,273 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+        "_generator": {
+            "name": "bicep",
+            "version": "0.5.6.12127",
+            "templateHash": "1532257987028557958"
+        }
+    },
+    "parameters": {
+        "policyDefinitionName01": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name"
+            }
+        },
+        "policyAssignmentName01": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Name"
+            }
+        },
+        "policyAssignmentDisplayName01": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Display Name"
+            }
+        },
+        "policyDefinitionName02": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name"
+            }
+        },
+        "policyAssignmentName02": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Name"
+            }
+        },
+        "policyAssignmentDisplayName02": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Display Name"
+            }
+        },
+        "policyDefinitionName03": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name"
+            }
+        },
+        "policyAssignmentName03": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Name"
+            }
+        },
+        "policyAssignmentDisplayName03": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Display Name"
+            }
+        },
+        "policyDefinitionName04": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Definition Name"
+            }
+        },
+        "policyAssignmentName04": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Name"
+            }
+        },
+        "policyAssignmentDisplayName04": {
+            "type": "string",
+            "metadata": {
+                "description": "Policy Assignment Display Name"
+            }
+        },
+        "DefMgmtGroupLoc": {
+            "type": "string",
+            "metadata": {
+                "description": "Definition Management Group Location"
+            }
+        },
+        "builtInRoleType": {
+            "type": "string",
+            "allowedValues": [
+                "Owner",
+                "Contributor",
+                "Reader"
+            ],
+            "metadata": {
+                "description": "Policy Definition ID (Contributor)"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Location, Region"
+            }
+        }
+    },
+    "variables": {
+        "DefMgmtGroupLoc": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('DefMgmtGroupLoc'))]",
+        "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+        "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+        "policies": {
+            "policyAssignments": [
+                { // One
+                    "PolicyAssignmentName": "[parameters('policyAssignmentName01')]",
+                    "RoleAssignmentName": "[guid('RoleAssignment', parameters('policyAssignmentName01'), uniqueString(subscription().displayName))]",
+                    "RemediationName": "[guid('Remediate', parameters('policyAssignmentName01'), subscription().displayName)]",
+                    "location": "[parameters('location')]",
+                    "policyAssignmentProperties": {
+                        "displayName": "[parameters('policyAssignmentDisplayName01')]",
+                        "enforcementMode": "Default",
+                        "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName01'))]"
+                    },
+                    "roleAssignmentProperties": {
+                        "roleDefinitionId": "[variables(parameters('builtInRoleType'))]",
+                        "principalType": "ServicePrincipal"
+                    },
+                    "remediationProperties": {
+                        "locations": ["[parameters('location')]"],
+                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName01'))]",                
+                        "policyDefinitionReferenceId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName01'))]",
+                        "resourceDiscoveryMode": "ExistingNonCompliant",
+                        "failureThreshold": {
+                            "percentage": 1
+                        },
+                        "parallelDeployments": 10,
+                        "resourceCount": 500
+                    }
+                },
+                { // Two
+                    "PolicyAssignmentName": "[parameters('policyAssignmentName02')]",
+                    "RoleAssignmentName": "[guid('RoleAssignment', parameters('policyAssignmentName02'), uniqueString(subscription().displayName))]",
+                    "RemediationName": "[guid('Remediate', parameters('policyAssignmentName02'), subscription().displayName)]",
+                    "location": "[parameters('location')]",
+                    "policyAssignmentProperties": {
+                        "displayName": "[parameters('policyAssignmentDisplayName02')]",
+                        "enforcementMode": "Default",
+                        "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName02'))]"
+                    },
+                    "roleAssignmentProperties": {
+                        "roleDefinitionId": "[variables(parameters('builtInRoleType'))]",
+                        "principalType": "ServicePrincipal"
+                    },
+                    "remediationProperties": {
+                        "locations": ["[parameters('location')]"],
+                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName02'))]",                
+                        "policyDefinitionReferenceId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName02'))]",
+                        "resourceDiscoveryMode": "ExistingNonCompliant",
+                        "failureThreshold": {
+                            "percentage": 1
+                        },
+                        "parallelDeployments": 10,
+                        "resourceCount": 500
+                    }
+                },
+                { // Three
+                    "PolicyAssignmentName": "[parameters('policyAssignmentName04')]",
+                    "RoleAssignmentName": "[guid('RoleAssignment', parameters('policyAssignmentName04'), uniqueString(subscription().displayName))]",
+                    "RemediationName": "[guid('Remediate', parameters('policyAssignmentName04'), subscription().displayName)]",
+                    "location": "[parameters('location')]",
+                    "policyAssignmentProperties": {
+                        "displayName": "[parameters('policyAssignmentDisplayName04')]",
+                        "enforcementMode": "Default",
+                        "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName04'))]"
+                    },
+                    "roleAssignmentProperties": {
+                        "roleDefinitionId": "[variables(parameters('builtInRoleType'))]",
+                        "principalType": "ServicePrincipal"
+                    },
+                    "remediationProperties": {
+                        "locations": ["[parameters('location')]"],
+                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName04'))]",                
+                        "policyDefinitionReferenceId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName04'))]",
+                        "resourceDiscoveryMode": "ExistingNonCompliant",
+                        "failureThreshold": {
+                            "percentage": 1
+                        },
+                        "parallelDeployments": 10,
+                        "resourceCount": 500
+                    }
+                }
+            ]
+        }
+    },
+    "resources": [
+        { // One
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2020-03-01",
+            "location": "[variables('policies').policyAssignments[copyIndex()].location]",
+            "name": "[variables('policies').policyAssignments[copyIndex()].PolicyAssignmentName]",
+            "copy": {
+                "name": "policyAssignmentCopy",
+                "count": "[length(variables('policies').policyAssignments)]"
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "displayName": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.displayName]",
+                "enforcementMode": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.enforcementMode]",
+                "policyDefinitionId": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.policyDefinitionId]"
+            }
+        },
+        { // https://stackoverflow.com/questions/68388609/azure-policy-not-creating-roles-for-managed-identity-when-deployed-through-devop
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2020-10-01-preview",
+            "name": "[variables('policies').policyAssignments[copyIndex()].RoleAssignmentName]",
+            "copy": {
+                "name": "roleAssignmentCopy",
+                "count": "[length(variables('policies').policyAssignments)]"
+            },
+            "dependsOn": [
+                "policyAssignmentCopy"
+            ],
+            "properties": {
+                "roleDefinitionId": "[variables('policies').policyAssignments[copyIndex()].roleAssignmentProperties.roleDefinitionId]",
+                "principalType": "[variables('policies').policyAssignments[copyIndex()].roleAssignmentProperties.principalType]",
+                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', variables('policies').policyAssignments[copyIndex()].PolicyAssignmentName), '2021-06-01', 'full').identity.principalId]"
+            }
+        },
+        { // https://docs.microsoft.com/en-us/azure/templates/microsoft.policyinsights/2019-07-01/remediations?tabs=json#remediationfilters
+            "type": "Microsoft.PolicyInsights/remediations",
+            "apiVersion": "2021-10-01",
+            "name": "[variables('policies').policyAssignments[copyIndex()].RemediationName]",
+            "copy": {
+                "name": "policyRemediationsCopy",
+                "count": "[length(variables('policies').policyAssignments)]"
+            },
+            "properties": {
+                "filters": {
+                    "locations": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.locations]"
+                },
+                "policyAssignmentId": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.policyAssignmentId]",                
+                "policyDefinitionReferenceId": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.policyDefinitionReferenceId]",
+                "resourceDiscoveryMode": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.resourceDiscoveryMode]",
+                "failureThreshold": {
+                    "percentage": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.failureThreshold.percentage]"
+                },
+                "parallelDeployments": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.parallelDeployments]",
+                "resourceCount": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.resourceCount]"
+            },
+            "dependsOn": [
+                "roleAssignmentCopy",
+                "policyAssignmentCopy"
+            ]
+        },
+        { // Policy assignment, only with no remediation, deny only, not using CopyIndex
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2020-03-01",
+            "name": "[parameters('policyAssignmentName03')]",
+            "location": "[parameters('location')]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "displayName": "[parameters('policyAssignmentDisplayName03')]",
+                "enforcementMode": "Default",
+                "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName03'))]"
+            }
+        }
+    ]
+}
