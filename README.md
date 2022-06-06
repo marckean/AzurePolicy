@@ -1,3 +1,4 @@
+
 # Contents of this repo
 
 - There's a Test environment folder which includes Bicep deployment files to deploy the test resources to Azure, so that you can test Azure Policy against real Azure Resources.
@@ -7,6 +8,37 @@
   - `/artifacts/policyAssignments.json` and `/artifacts/policyDefinitions.json` are the two child templates
   - `/artifacts/policyDefinitions.json` is deployed to the Management Group Scope. Policy Definitions live in the root Management Group.
   - `/artifacts/policyAssignments.json` is deployed to the Subscription scope. Policy Assignments live in lower levels of the hierarchy e.g. a subscription.
+
+To deploy all of this, we are using the following [PowerShell script](https://github.com/marckean/AzurePolicy/blob/main/deploy-AzureJSONResources.ps1):
+
+```powershell
+param (
+    $ManagementGroupId = "8efecb12-cbaa-4612-b850-e6a68c14d336",
+    $location = "australiaeast",
+    $ts_resourcegroupname = "TemplateSpecs"
+)
+
+New-AzTemplateSpec `
+  -Name 'TS_policyAssignments' `
+  -Version "2.0.0" `
+  -ResourceGroupName $ts_resourcegroupname `
+  -Location $location `
+  -TemplateFile "C:\Users\makean\Documents\AzureDevOps\policy-automation\artifacts\policyAssignments.json" `
+  -Force
+
+  New-AzTemplateSpec `
+  -Name 'TS_policyDefinitions' `
+  -Version "2.0.0" `
+  -ResourceGroupName $ts_resourcegroupname `
+  -Location $location `
+  -TemplateFile "C:\Users\makean\Documents\AzureDevOps\policy-automation\artifacts\policyDefinitions.json" `
+  -Force
+
+New-AzManagementGroupDeployment -Location $location -TemplateFile 'C:\Users\makean\Documents\AzureDevOps\policy-automation\deploy.json' -ManagementGroupId $ManagementGroupId -Verbose -ErrorAction Continue
+
+```
+
+Why we're using a PowerShell script, because the nested templates have to live somewhere. For this, we're using Template Specs in Azure.
 
 ## Deployment Scope
 
