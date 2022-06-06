@@ -1,3 +1,24 @@
+# Contents of this repo
+
+- There's a Test environment folder which includes Bicep deployment files to deploy the test resources to Azure, so that you can test Azure Policy against real Azure Resources.
+  - You will need to install the **Azure CLI** as per [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
+- Then the rest of this is Azure Policy itself deploying using nested templates from the parent template. 
+  - `deploy.json` is the parent template
+  - `/artifacts/policyAssignments.json` and `/artifacts/policyDefinitions.json` are the two child templates
+  - `/artifacts/policyDefinitions.json` is deployed to the Management Group Scope. Policy Definitions live in the root Management Group.
+  - `/artifacts/policyAssignments.json` is deployed to the Subscription scope. Policy Assignments live in lower levels of the hierarchy e.g. a subscription.
+
+## Deployment Scope
+
+More on deployment scopes here:
+
+[Resource group deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-resource-group?tabs=azure-cli)
+
+[Subscription deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-subscription?tabs=azure-cli)
+
+[Management group deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-management-group?tabs=azure-cli)
+
+[Tenant deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-tenant?tabs=azure-cli)
 # Policy Remediation
 
 Policy **DeployIfNotExists** or **Modify** effect will take effect on any new or updated resources. Existing resources after they are scanned by the Policy Compliance Checker engine will need a remediation task kicked off or through code to get remediated. [From here](https://youtu.be/AVn5glYBz84?t=4279).
@@ -145,6 +166,21 @@ Remove-AzRoleAssignment -ObjectId ((Get-AzRoleAssignment | where {$_.DisplayName
 
 ## Deployment of Test environment
 
+Firstly, you'll need to install **Bicep**, so you can deploy successfully, as per [here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
+
+You will need to install the **Azure CLI** as per [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
+
+```powershell
+param (
+    $ManagementGroupId = "8efecb12-cbaa-4612-b850-e6a68c14d336",
+    $location = "australiaeast",
+    $ts_resourcegroupname = "TemplateSpecs"
+)
+
+New-AzManagementGroupDeployment -Location $location -TemplateFile 'C:\Users\makean\Documents\Github\AzureBicep\main.bicep' -ManagementGroupId $ManagementGroupId
+
+```
+
 To deploy to a resource group, use az deployment group create:
 
 az deployment group create --resource-group <resource-group-name> --template-file <path-to-bicep>
@@ -173,11 +209,7 @@ az deployment mg create --location australiaeast --management-group-id '8efecb12
 
 Deploy JSON to management group. We are using nested templates in order to deploy this complete solution to Azure. Reason is, the **Policy Definitions** will be deployed to the root Management Group so they can be accessed by everything else in the hierarchy. The **Policy Assignments** will be deployed separately to child subscriptions. 
 
-```batch
-az deployment mg create --name demoMGDeployment --location australiaeast --management-group-id 8efecb12-cbaa-4612-b850-e6a68c14d336 --template-file "./deploy.json"
-```
-
-```powershell
+```Powershell
 param (
     $ManagementGroupId = "8efecb12-cbaa-4612-b850-e6a68c14d336",
     $location = "australiaeast",
@@ -210,12 +242,3 @@ The **relativePath** property of Microsoft.Resources/deployments makes it easier
 
 [Use relative path for linked templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/linked-templates?tabs=azure-powershell#use-relative-path-for-linked-templates)
 
-### Deployment Scope
-
-[Resource group deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-resource-group?tabs=azure-cli)
-
-[Subscription deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-subscription?tabs=azure-cli)
-
-[Management group deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-management-group?tabs=azure-cli)
-
-[Tenant deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-tenant?tabs=azure-cli)

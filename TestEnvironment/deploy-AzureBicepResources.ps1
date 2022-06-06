@@ -6,5 +6,5 @@ param (
 
 New-AzManagementGroupDeployment -Location $location -TemplateFile 'C:\Users\makean\Documents\Github\AzureBicep\main.bicep' -ManagementGroupId $ManagementGroupId
 
-az deployment mg create --location $location --management-group-id $ManagementGroupId --template-file 'C:\Users\makean\Documents\Github\AzureBicep\main.bicep' --verbose
+#az deployment mg create --location $location --management-group-id $ManagementGroupId --template-file 'C:\Users\makean\Documents\Github\AzureBicep\main.bicep' --verbose
 
