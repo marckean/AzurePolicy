@@ -9,7 +9,7 @@ New-AzTemplateSpec `
   -Version "2.0.0" `
   -ResourceGroupName $ts_resourcegroupname `
   -Location $location `
-  -TemplateFile "C:\Users\makean\Documents\AzureDevOps\policy-automation\artifacts\policyAssignments.json" `
+  -TemplateFile ".\artifacts\policyAssignments.json" `
   -Force
 
   New-AzTemplateSpec `
@@ -17,7 +17,7 @@ New-AzTemplateSpec `
   -Version "2.0.0" `
   -ResourceGroupName $ts_resourcegroupname `
   -Location $location `
-  -TemplateFile "C:\Users\makean\Documents\AzureDevOps\policy-automation\artifacts\policyDefinitions.json" `
+  -TemplateFile ".\artifacts\policyDefinitions.json" `
   -Force
 
-New-AzManagementGroupDeployment -Location $location -TemplateFile 'C:\Users\makean\Documents\AzureDevOps\policy-automation\deploy.json' -ManagementGroupId $ManagementGroupId -Verbose -ErrorAction Continue
+New-AzManagementGroupDeployment -Location $location -TemplateFile '.\deploy.json' -ManagementGroupId $ManagementGroupId -Verbose -ErrorAction Continue
