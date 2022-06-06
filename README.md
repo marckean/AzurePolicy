@@ -9,7 +9,9 @@
   - `/artifacts/policyDefinitions.json` is deployed to the Management Group Scope. Policy Definitions live in the root Management Group.
   - `/artifacts/policyAssignments.json` is deployed to the Subscription scope. Policy Assignments live in lower levels of the hierarchy e.g. a subscription.
 
-To deploy all of this, we are using the following [PowerShell script](https://github.com/marckean/AzurePolicy/blob/main/deploy-AzureJSONResources.ps1):
+![AzurePolicyDeploymentStructure](/blobs/AzurePolicyDeploymentStructure.png)
+
+To deploy all of this, we are using the following [PowerShell script](https://github.com/marckean/AzurePolicy/blob/main/deploy-AzureJSONResources.ps1) which copies the child templates to Template Specs, and then kicks off `deploy.json`:
 
 ```powershell
 param (
@@ -38,7 +40,7 @@ New-AzManagementGroupDeployment -Location $location -TemplateFile 'C:\Users\make
 
 ```
 
-Why we're using a PowerShell script, because the nested templates have to live somewhere. For this, we're using Template Specs in Azure.
+Why we're using a PowerShell script because the nested templates have to live somewhere. For this, rather than using a storage account, we're using **Template Specs** in Azure.
 
 ## Deployment Scope
 
