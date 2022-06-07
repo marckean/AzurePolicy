@@ -101,14 +101,12 @@
                                                 "equals": false //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
                                             },
                                             {
-                                                "not": {
-                                                    "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
-                                                    "equals": "TLS1_2" //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
-                                                }                                              
+                                                "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
+                                                "notequals": "TLS1_2" //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists                                            
                                             },
                                             {
                                                 "field": "Microsoft.Storage/storageAccounts/allowBlobPublicAccess",
-                                                "equals": false //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
+                                                "equals": true //equals, notEquals, like, notLike, notLike, matchInsensitively, match, notMatch, notMatchInsensitively, contains, notContains, in, notIn, containsKey, notContainsKey, less, lessOrEquals, greater, greaterOrEquals, exists
                                             }
                                         ]
                                     }
