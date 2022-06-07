@@ -310,10 +310,6 @@
                                                 "notEquals": true
                                             },
                                             {
-                                                "field": "Microsoft.KeyVault/vaults/SoftDeleteRetentionInDays",
-                                                "notEquals": 90
-                                            },
-                                            {
                                                 "field": "Microsoft.KeyVault/vaults/enableRbacAuthorization",
                                                 "notEquals": true
                                             }
@@ -331,11 +327,6 @@
                                             "operation": "addOrReplace",
                                             "field": "Microsoft.KeyVault/vaults/enableSoftDelete",
                                             "value": true
-                                        },
-                                        {
-                                            "operation": "addOrReplace",
-                                            "field": "Microsoft.KeyVault/vaults/SoftDeleteRetentionInDays",
-                                            "value": 90
                                         },
                                         {
                                             "operation": "addOrReplace",

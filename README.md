@@ -204,6 +204,8 @@ Firstly, you'll need to install **Bicep**, so you can deploy successfully, as pe
 
 You will need to install the **Azure CLI** as per [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
 
+Then run this [script](https://github.com/marckean/AzurePolicy/blob/main/TestEnvironment/deploy-AzureBicepResources.ps1): 
+
 ```powershell
 param (
     $ManagementGroupId = "8efecb12-cbaa-4612-b850-e6a68c14d336",
@@ -211,7 +213,7 @@ param (
     $ts_resourcegroupname = "TemplateSpecs"
 )
 
-New-AzManagementGroupDeployment -Location $location -TemplateFile 'C:\Users\makean\Documents\Github\AzureBicep\main.bicep' -ManagementGroupId $ManagementGroupId
+New-AzManagementGroupDeployment -Location $location -TemplateFile '.\TestEnvironment\main.bicep' -ManagementGroupId $ManagementGroupId
 
 ```
 
@@ -242,6 +244,8 @@ az deployment mg create --location australiaeast --management-group-id '8efecb12
 ## Deployment of Azure Policy
 
 Deploy JSON to management group. We are using nested templates in order to deploy this complete solution to Azure. Reason is, the **Policy Definitions** will be deployed to the root Management Group so they can be accessed by everything else in the hierarchy. The **Policy Assignments** will be deployed separately to child subscriptions. 
+
+Run this [script](https://github.com/marckean/AzurePolicy/blob/main/deploy-AzureJSONResources.ps1):
 
 ```Powershell
 param (
