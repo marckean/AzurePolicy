@@ -26,8 +26,8 @@ Things to keep in mind are the version numbers for the **TemplateSpecs**, as whe
 
 ```json
 "templateLink": {
-              "id": "[resourceId(parameters('targetSubID'), parameters('TS_resourceGroupName'), 'Microsoft.Resources/templateSpecs/versions', 'TS_policyAssignments', '2.0.1')]"
-          },
+    "id": "[resourceId(parameters('targetSubID'), parameters('TS_resourceGroupName'), 'Microsoft.Resources/templateSpecs/versions', 'TS_policyAssignments', '2.0.1')]"
+},
 ```
 
 Running the PowerShell script below simply updates the TemplateSpecs in Azure with the latest **child** templates `policyAssignments.json` and `policyDefinitions.json` which sit locally. 
