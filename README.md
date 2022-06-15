@@ -63,7 +63,7 @@ Why we're using a PowerShell script because the nested templates have to live so
 
 ## Deployment Scope
 
-More on deployment scopes here:
+Above we're using the deployment scope for the parent template `deploy.json` to the **Management Group**. Reason being this is the upper most level int he scope and allows us to then deploy the **child** templates `policyAssignments.json` and `policyDefinitions.json` to either the **Management Group** or **subscription**. More on deployment scopes here:
 
 [Resource group deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-resource-group?tabs=azure-cli)
 
