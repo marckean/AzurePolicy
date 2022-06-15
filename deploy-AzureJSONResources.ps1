@@ -6,7 +6,7 @@ param (
 
 New-AzTemplateSpec `
   -Name 'TS_policyAssignments' `
-  -Version "2.0.0" `
+  -Version "2.0.1" `
   -ResourceGroupName $ts_resourcegroupname `
   -Location $location `
   -TemplateFile ".\artifacts\policyAssignments.json" `
@@ -14,7 +14,7 @@ New-AzTemplateSpec `
 
   New-AzTemplateSpec `
   -Name 'TS_policyDefinitions' `
-  -Version "2.0.0" `
+  -Version "2.0.1" `
   -ResourceGroupName $ts_resourcegroupname `
   -Location $location `
   -TemplateFile ".\artifacts\policyDefinitions.json" `

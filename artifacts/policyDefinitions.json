@@ -10,52 +10,16 @@
     },
     "parameters": {
         "policyDefinitionName01": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name 1"
-            }
-        },
-        "policyDefinitionDisplayName01": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Display Name 1"
-            }
+            "type": "string"
         },
         "policyDefinitionName02": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name 2"
-            }
-        },
-        "policyDefinitionDisplayName02": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Display Name 2"
-            }
+            "type": "string"
         },
         "policyDefinitionName03": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name 3"
-            }
-        },
-        "policyDefinitionDisplayName03": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Display Name 3"
-            }
+            "type": "string"
         },
         "policyDefinitionName04": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name 4"
-            }
-        },
-        "policyDefinitionDisplayName04": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Display Name 4"
-            }
+            "type": "string"
         },
         "StorageBuiltInRoleName": {
             "type": "string",
@@ -80,11 +44,18 @@
         }
     },
     "variables": {
+        "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+        "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+        "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+        "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+        "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
         "policies": {
             "policyDefinitions": [
                 {
+                    "name": "[parameters('policyDefinitionName01')]",
                     "properties": {
-                        "displayName": "[parameters('policyDefinitionDisplayName01')]",
+                        "displayName": "Secure transfer to storage accounts should be enabled",
                         "policyType": "Custom",
                         "mode": "Indexed",
                         "description": "Storage account security, supportsHttpsTrafficOnly, minimumTlsVersion, allowBlobPublicAccess",
@@ -144,12 +115,12 @@
                                 }
                             }
                         }
-                    },
-                    "name": "[parameters('policyDefinitionName01')]"
+                    }
                 },
                 {
+                    "name": "[parameters('policyDefinitionName02')]",
                     "properties": {
-                        "displayName": "[parameters('policyDefinitionDisplayName02')]",
+                        "displayName": "No RDP 3389 or SSH 22 from the internet",
                         "policyType": "Custom",
                         "mode": "All", //all: evaluate resource groups, subscriptions, and all resource types. indexed: only evaluate resource types that support tags and location
                         "description": "Set to Deny any network security rules that allow either port 3389 or port 22 from the internet",
@@ -177,8 +148,28 @@
                                                 "equals": "Allow"
                                             },
                                             {
-                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
-                                                "equals": "*"
+                                                "anyOf": [ // Source address
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                                        "equals": "*"
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                                        "equals": "Internet"
+                                                    },
+                                                    {
+                                                        "not": {
+                                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                                                            "notEquals": "*"
+                                                        }
+                                                    },
+                                                    {
+                                                        "not": {
+                                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                                                            "notEquals": "Internet"
+                                                        }
+                                                    }
+                                                ]
                                             },
                                             {
                                                 "anyOf": [ // Destination ports
@@ -219,26 +210,6 @@
                                                         "greater": 0
                                                     }
                                                 ]
-                                            },
-                                            {
-                                                "anyOf": [ // Source address
-                                                    {
-                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
-                                                        "equals": "*"
-                                                    },
-                                                    {
-                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
-                                                        "equals": "Internet"
-                                                    },
-                                                    {
-                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
-                                                        "equals": "*"
-                                                    },
-                                                    {
-                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
-                                                        "equals": "Internet"
-                                                    }
-                                                ]
                                             }
                                         ]
                                     }
@@ -259,12 +230,12 @@
                                 }
                             }
                         }
-                    },
-                    "name": "[parameters('policyDefinitionName02')]"
+                    }
                 },
                 {
+                    "name": "[parameters('policyDefinitionName03')]",
                     "properties": {
-                        "displayName": "[parameters('policyDefinitionDisplayName03')]",
+                        "displayName": "Deny deployment of a custom role which has the same permissions as the built-in owner role",
                         "policyType": "Custom",
                         "mode": "All",
                         "description": "Deny deployment of a custom role which has the same permissions as the built-in owner role",
@@ -294,12 +265,12 @@
                             }
                         },
                         "parameters": {}
-                    },
-                    "name": "[parameters('policyDefinitionName03')]"
+                    }
                 },
                 {
+                    "name": "[parameters('policyDefinitionName04')]",
                     "properties": {
-                        "displayName": "[parameters('policyDefinitionDisplayName04')]",
+                        "displayName": "Azure KeyVault desired settings",
                         "policyType": "Custom",
                         "mode": "All",
                         "description": "Azure KeyVault settings for desired KeyVaults",
@@ -349,8 +320,7 @@
                             }
                         },
                         "parameters": {}
-                    },
-                    "name": "[parameters('policyDefinitionName04')]"
+                    }
                 }
             ]
         }

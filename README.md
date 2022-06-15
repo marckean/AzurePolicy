@@ -9,9 +9,28 @@
   - `/artifacts/policyDefinitions.json` is deployed to the Management Group Scope. Policy Definitions live in the root Management Group.
   - `/artifacts/policyAssignments.json` is deployed to the Subscription scope. Policy Assignments live in lower levels of the hierarchy e.g. a subscription.
 
+The two **child** templates `policyAssignments.json` and `policyDefinitions.json` live in Azure, in which the **parent** template `deploy.json` calls on at deployment time. 
+
 ![AzurePolicyDeploymentStructure](/blobs/AzurePolicyDeploymentStructure.png)
 
-To deploy all of this, we are using the following [PowerShell script](https://github.com/marckean/AzurePolicy/blob/main/deploy-AzureJSONResources.ps1) which copies the child templates to Template Specs, and then kicks off `deploy.json`:
+
+> [!TIP]
+> Install the Azure extension for VS Code, as per [here](https://code.visualstudio.com/docs/azure/extensions). Then sign into Azure.
+
+
+Recommendation would be to clone this repo so that it's local. To deploy all of this, we are using the following [PowerShell script](https://github.com/marckean/AzurePolicy/blob/main/deploy-AzureJSONResources.ps1) which copies the child templates to **Template Specs**, and then kicks off `deploy.json`:
+
+In the PowerShell script below, change the variables at the top - with the `$ManagementGroupId` being the upper most management group that you want to deploy your Policy Definitions. If in doubt, deploy the Policy Definitions to the root management group.
+
+Things to keep in mind are the version numbers for the **TemplateSpecs**, as when the parent `deploy.json` deploys the the child templates, they refer to the child TemplateSpecs with version numbers, so make sure you're the same version number is in both the **PowerShell** script as well as the `deploy.json` file. 
+
+```json
+"templateLink": {
+              "id": "[resourceId(parameters('targetSubID'), parameters('TS_resourceGroupName'), 'Microsoft.Resources/templateSpecs/versions', 'TS_policyAssignments', '2.0.1')]"
+          },
+```
+
+Running the PowerShell script below simply updates the TemplateSpecs in Azure with the latest **child** templates `policyAssignments.json` and `policyDefinitions.json` which sit locally. 
 
 ```powershell
 param (
@@ -72,9 +91,9 @@ When Azure Policy starts a template deployment when evaluating **deployIfNotExis
 
 ![](blobs/remediation-tab.png)
 
-> [!IMPORTANT]
+> [!IMPORTANT][](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#manually-configure-the-managed-identity)
 > In the following scenarios, the assignment's managed identity must be
-> [manually granted access](#manually-configure-the-managed-identity) or the remediation deployment
+> [manually granted access](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#manually-configure-the-managed-identity) or the remediation deployment
 > fails:
 >
 > - If the assignment is created through SDK

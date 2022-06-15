@@ -9,83 +9,23 @@
         }
     },
     "parameters": {
-        "policyDefinitionName01": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name"
-            }
-        },
-        "policyAssignmentName01": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Name"
-            }
-        },
-        "policyAssignmentDisplayName01": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Display Name"
-            }
-        },
-        "policyDefinitionName02": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name"
-            }
-        },
-        "policyAssignmentName02": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Name"
-            }
-        },
-        "policyAssignmentDisplayName02": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Display Name"
-            }
-        },
-        "policyDefinitionName03": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name"
-            }
-        },
-        "policyAssignmentName03": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Name"
-            }
-        },
-        "policyAssignmentDisplayName03": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Display Name"
-            }
-        },
-        "policyDefinitionName04": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Definition Name"
-            }
-        },
-        "policyAssignmentName04": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Name"
-            }
-        },
-        "policyAssignmentDisplayName04": {
-            "type": "string",
-            "metadata": {
-                "description": "Policy Assignment Display Name"
-            }
-        },
         "DefMgmtGroupLoc": {
             "type": "string",
             "metadata": {
                 "description": "Definition Management Group Location"
             }
+        },
+        "policyDefinitionName01": {
+            "type": "string"
+        },
+        "policyDefinitionName02": {
+            "type": "string"
+        },
+        "policyDefinitionName03": {
+            "type": "string"
+        },
+        "policyDefinitionName04": {
+            "type": "string"
         },
         "StorageBuiltInRoleName": {
             "type": "string",
@@ -117,15 +57,21 @@
     },
     "variables": {
         "DefMgmtGroupLoc": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('DefMgmtGroupLoc'))]",
+        "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+        "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+        "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+        "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+        "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
         "policies": {
             "policyAssignments": [
                 { // One
-                    "PolicyAssignmentName": "[parameters('policyAssignmentName01')]",
-                    "RoleAssignmentName": "[guid('RoleAssignment', parameters('policyAssignmentName01'), uniqueString(subscription().displayName))]",
-                    "RemediationName": "[guid('Remediate', parameters('policyAssignmentName01'), subscription().displayName)]",
+                    "PolicyAssignmentName": "AssSecTransStgAcct",
+                    "RoleAssignmentName": "[guid('RoleAssignment', 'AssSecTransStgAcct', uniqueString(subscription().displayName))]",
+                    "RemediationName": "[guid('Remediate', 'AssSecTransStgAcct', subscription().displayName)]",
                     "location": "[parameters('location')]",
                     "policyAssignmentProperties": {
-                        "displayName": "[parameters('policyAssignmentDisplayName01')]",
+                        "displayName": "Secure transfer to storage accounts should be enabled",
                         "enforcementMode": "Default",
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName01'))]"
                     },
@@ -135,7 +81,7 @@
                     },
                     "remediationProperties": {
                         "locations": ["[parameters('location')]"],
-                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName01'))]",                
+                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', 'AssSecTransStgAcct')]",                
                         "policyDefinitionReferenceId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName01'))]",
                         "resourceDiscoveryMode": "ExistingNonCompliant",
                         "failureThreshold": {
@@ -146,12 +92,12 @@
                     }
                 },
                 { // Two
-                    "PolicyAssignmentName": "[parameters('policyAssignmentName02')]",
-                    "RoleAssignmentName": "[guid('RoleAssignment', parameters('policyAssignmentName02'), uniqueString(subscription().displayName))]",
-                    "RemediationName": "[guid('Remediate', parameters('policyAssignmentName02'), subscription().displayName)]",
+                    "PolicyAssignmentName": "AssNoRDPSSHInt",
+                    "RoleAssignmentName": "[guid('RoleAssignment', 'AssNoRDPSSHInt', uniqueString(subscription().displayName))]",
+                    "RemediationName": "[guid('Remediate', 'AssNoRDPSSHInt', subscription().displayName)]",
                     "location": "[parameters('location')]",
                     "policyAssignmentProperties": {
-                        "displayName": "[parameters('policyAssignmentDisplayName02')]",
+                        "displayName": "No RDP 3389 or SSH 22 from the internet",
                         "enforcementMode": "Default",
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName02'))]"
                     },
@@ -161,7 +107,7 @@
                     },
                     "remediationProperties": {
                         "locations": ["[parameters('location')]"],
-                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName02'))]",                
+                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', 'AssNoRDPSSHInt')]",                
                         "policyDefinitionReferenceId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName02'))]",
                         "resourceDiscoveryMode": "ExistingNonCompliant",
                         "failureThreshold": {
@@ -172,12 +118,12 @@
                     }
                 },
                 { // Three
-                    "PolicyAssignmentName": "[parameters('policyAssignmentName04')]",
-                    "RoleAssignmentName": "[guid('RoleAssignment', parameters('policyAssignmentName04'), uniqueString(subscription().displayName))]",
-                    "RemediationName": "[guid('Remediate', parameters('policyAssignmentName04'), subscription().displayName)]",
+                    "PolicyAssignmentName": "AssKeyVault",
+                    "RoleAssignmentName": "[guid('RoleAssignment', 'AssKeyVault', uniqueString(subscription().displayName))]",
+                    "RemediationName": "[guid('Remediate', 'AssKeyVault', subscription().displayName)]",
                     "location": "[parameters('location')]",
                     "policyAssignmentProperties": {
-                        "displayName": "[parameters('policyAssignmentDisplayName04')]",
+                        "displayName": "Azure KeyVault desired settings",
                         "enforcementMode": "Default",
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName04'))]"
                     },
@@ -187,7 +133,7 @@
                     },
                     "remediationProperties": {
                         "locations": ["[parameters('location')]"],
-                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName04'))]",                
+                        "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', 'AssKeyVault')]",                
                         "policyDefinitionReferenceId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName04'))]",
                         "resourceDiscoveryMode": "ExistingNonCompliant",
                         "failureThreshold": {
@@ -265,13 +211,13 @@
         { // Policy assignment, only with no remediation, deny only, not using CopyIndex
             "type": "Microsoft.Authorization/policyAssignments",
             "apiVersion": "2020-03-01",
-            "name": "[parameters('policyAssignmentName03')]",
+            "name": "AssDenyCustRole",
             "location": "[parameters('location')]",
             "identity": {
                 "type": "SystemAssigned"
             },
             "properties": {
-                "displayName": "[parameters('policyAssignmentDisplayName03')]",
+                "displayName": "Deny deployment of a custom role which has the same permissions as the built-in owner role",
                 "enforcementMode": "Default",
                 "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName03'))]"
             }

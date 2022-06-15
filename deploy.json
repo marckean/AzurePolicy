@@ -41,21 +41,9 @@
     "variables": {
         "DefmgScope": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('targetMG'))]",
         "policyDefinitionName01": "DefSecTransStgAcct",
-        "policyDefinitionDisplayName01": "Secure transfer to storage accounts should be enabled",
-        "policyAssignmentName01": "AssSecTransStgAcct",
-        "policyAssignmentDisplayName01": "Secure transfer to storage accounts should be enabled",
-        "policyAssignmentName02": "AssNoRDPSSHInt",
-        "policyAssignmentDisplayName02": "No RDP 3389 or SSH 22 from the internet",
         "policyDefinitionName02": "DefNo_RDP_SSH",
-        "policyDefinitionDisplayName02": "No RDP 3389 or SSH 22 from the internet",
-        "policyAssignmentName03": "AssDenyCustRole",
-        "policyAssignmentDisplayName03": "Deny deployment of a custom role which has the same permissions as the built-in owner role",
         "policyDefinitionName03": "DefDenyCustRole",
-        "policyDefinitionDisplayName03": "Deny deployment of a custom role which has the same permissions as the built-in owner role",
-        "policyAssignmentName04": "AssKeyVault",
-        "policyAssignmentDisplayName04": "Azure KeyVault desired settings",
-        "policyDefinitionName04": "DefKeyVault",
-        "policyDefinitionDisplayName04": "Azure KeyVault desired settings"
+        "policyDefinitionName04": "DefKeyVault"
     },
     "resources": [
         { // Management Group Scope - Definitions
@@ -67,17 +55,13 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "id": "[resourceId(parameters('targetSubID'), parameters('TS_resourceGroupName'), 'Microsoft.Resources/templateSpecs/versions', 'TS_policyDefinitions', '2.0.0')]"
+                    "id": "[resourceId(parameters('targetSubID'), parameters('TS_resourceGroupName'), 'Microsoft.Resources/templateSpecs/versions', 'TS_policyDefinitions', '2.0.1')]"
                 },
                 "parameters": {
                     "policyDefinitionName01": {"value": "[variables('policyDefinitionName01')]"},
-                    "policyDefinitionDisplayName01": {"value": "[variables('policyDefinitionDisplayName01')]"},
                     "policyDefinitionName02": {"value": "[variables('policyDefinitionName02')]"},
-                    "policyDefinitionDisplayName02": {"value": "[variables('policyDefinitionDisplayName02')]"},
                     "policyDefinitionName03": {"value": "[variables('policyDefinitionName03')]"},
-                    "policyDefinitionDisplayName03": {"value": "[variables('policyDefinitionDisplayName03')]"},
-                    "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"},
-                    "policyDefinitionDisplayName04": {"value": "[variables('policyDefinitionDisplayName04')]"}
+                    "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"}
                 }
             }
         },
@@ -90,21 +74,13 @@
             "properties": {                
                 "mode": "Incremental",
                 "templateLink": {
-                    "id": "[resourceId(parameters('targetSubID'), parameters('TS_resourceGroupName'), 'Microsoft.Resources/templateSpecs/versions', 'TS_policyAssignments', '2.0.0')]"
+                    "id": "[resourceId(parameters('targetSubID'), parameters('TS_resourceGroupName'), 'Microsoft.Resources/templateSpecs/versions', 'TS_policyAssignments', '2.0.1')]"
                 },
                 "parameters": {
                     "policyDefinitionName01": {"value": "[variables('policyDefinitionName01')]"},
-                    "policyAssignmentName01": {"value": "[variables('policyAssignmentName01')]"},
-                    "policyAssignmentDisplayName01": {"value": "[variables('policyAssignmentDisplayName01')]"},
                     "policyDefinitionName02": {"value": "[variables('policyDefinitionName02')]"},
-                    "policyAssignmentName02": {"value": "[variables('policyAssignmentName02')]"},
-                    "policyAssignmentDisplayName02": {"value": "[variables('policyAssignmentDisplayName02')]"},
                     "policyDefinitionName03": {"value": "[variables('policyDefinitionName03')]"},
-                    "policyAssignmentName03": {"value": "[variables('policyAssignmentName03')]"},
-                    "policyAssignmentDisplayName03": {"value": "[variables('policyAssignmentDisplayName03')]"},
                     "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"},
-                    "policyAssignmentName04": {"value": "[variables('policyAssignmentName04')]"},
-                    "policyAssignmentDisplayName04": {"value": "[variables('policyAssignmentDisplayName04')]"},
                     "location": {"value": "[parameters('targetRegion')]"},
                     "DefMgmtGroupLoc": {"value": "[parameters('targetMG')]"}
                 }
