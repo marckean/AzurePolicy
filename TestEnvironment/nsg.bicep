@@ -96,6 +96,34 @@ resource nsg1 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
                 }
             }
             {
+                name: 'Allow_RDP7-D'
+                properties: {
+                    description: 'Allow RDP'
+                    protocol: '*'
+                    sourcePortRange: '*'
+                    destinationPortRange: '3389'
+                    sourceAddressPrefix: '164.97.246.192'
+                    destinationAddressPrefix: '*'
+                    access: 'Allow'
+                    priority: 160
+                    direction: 'Inbound'
+                }
+            }
+            {
+                name: 'Allow_RDP8-D'
+                properties: {
+                    description: 'Allow RDP'
+                    protocol: '*'
+                    sourcePortRange: '*'
+                    destinationPortRange: '3389'
+                    sourceAddressPrefix: '164.97.246.192/28'
+                    destinationAddressPrefix: '*'
+                    access: 'Allow'
+                    priority: 170
+                    direction: 'Inbound'
+                }
+            }
+            {
                 name: 'Allow_SSH1-S'
                 properties: {
                     description: 'Allow SSH'
@@ -182,6 +210,34 @@ resource nsg1 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
                     destinationAddressPrefix: '*'
                     access: 'Allow'
                     priority: 250
+                    direction: 'Inbound'
+                }
+            }
+            {
+                name: 'Allow_SSH7-D'
+                properties: {
+                    description: 'Allow SSH'
+                    protocol: '*'
+                    sourcePortRange: '*'
+                    destinationPortRange: '22'
+                    sourceAddressPrefix: '164.97.246.192'
+                    destinationAddressPrefix: '*'
+                    access: 'Allow'
+                    priority: 260
+                    direction: 'Inbound'
+                }
+            }
+            {
+                name: 'Allow_SSH8-D'
+                properties: {
+                    description: 'Allow SSH'
+                    protocol: '*'
+                    sourcePortRange: '*'
+                    destinationPortRange: '22'
+                    sourceAddressPrefix: '164.97.246.192/28'
+                    destinationAddressPrefix: '*'
+                    access: 'Allow'
+                    priority: 270
                     direction: 'Inbound'
                 }
             }

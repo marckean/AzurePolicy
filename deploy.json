@@ -104,7 +104,7 @@
                     "policyAssignmentDisplayName03": {"value": "[variables('policyAssignmentDisplayName03')]"},
                     "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"},
                     "policyAssignmentName04": {"value": "[variables('policyAssignmentName04')]"},
-                    "policyAssignmentDisplayName04": {"value": "[variables('policyAssignmentDisplayName04')]"}
+                    "policyAssignmentDisplayName04": {"value": "[variables('policyAssignmentDisplayName04')]"},
                     "location": {"value": "[parameters('targetRegion')]"},
                     "DefMgmtGroupLoc": {"value": "[parameters('targetMG')]"}
                 }

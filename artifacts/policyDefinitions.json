@@ -177,6 +177,10 @@
                                                 "equals": "Allow"
                                             },
                                             {
+                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                                "equals": "*"
+                                            },
+                                            {
                                                 "anyOf": [ // Destination ports
                                                     {
                                                         "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
