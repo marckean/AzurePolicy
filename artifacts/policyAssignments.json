@@ -87,15 +87,25 @@
                 "description": "Definition Management Group Location"
             }
         },
-        "builtInRoleType": {
+        "StorageBuiltInRoleName": {
             "type": "string",
-            "allowedValues": [
-                "Owner",
-                "Contributor",
-                "Reader"
-            ],
+            "defaultValue": "Storage Account Contributor",
             "metadata": {
-                "description": "Policy Definition ID (Contributor)"
+                "description": "role Definition Id Name (Storage Account Contributor)"
+            }
+        },
+        "NetworkBuiltInRoleName": {
+            "type": "string",
+            "defaultValue": "Network Contributor",
+            "metadata": {
+                "description": "role Definition Id Name (Network Contributor)"
+            }
+        },
+        "KeyVaultBuiltInRoleName": {
+            "type": "string",
+            "defaultValue": "Key Vault Administrator",
+            "metadata": {
+                "description": "role Definition Id Name (Key Vault Administrator)"
             }
         },
         "location": {
@@ -107,9 +117,6 @@
     },
     "variables": {
         "DefMgmtGroupLoc": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('DefMgmtGroupLoc'))]",
-        "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-        "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
         "policies": {
             "policyAssignments": [
                 { // One
@@ -123,7 +130,7 @@
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName01'))]"
                     },
                     "roleAssignmentProperties": {
-                        "roleDefinitionId": "[variables(parameters('builtInRoleType'))]",
+                        "roleDefinitionId": "[variables(parameters('StorageBuiltInRoleName'))]",
                         "principalType": "ServicePrincipal"
                     },
                     "remediationProperties": {
@@ -149,7 +156,7 @@
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName02'))]"
                     },
                     "roleAssignmentProperties": {
-                        "roleDefinitionId": "[variables(parameters('builtInRoleType'))]",
+                        "roleDefinitionId": "[variables(parameters('NetworkBuiltInRoleName'))]",
                         "principalType": "ServicePrincipal"
                     },
                     "remediationProperties": {
@@ -175,7 +182,7 @@
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName04'))]"
                     },
                     "roleAssignmentProperties": {
-                        "roleDefinitionId": "[variables(parameters('builtInRoleType'))]",
+                        "roleDefinitionId": "[variables(parameters('KeyVaultBuiltInRoleName'))]",
                         "principalType": "ServicePrincipal"
                     },
                     "remediationProperties": {

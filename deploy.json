@@ -30,13 +30,6 @@
                 "description": "Target Management Group"
             }
         },
-        "builtInRoleType": {
-            "type": "string",
-            "defaultValue": "Contributor",
-            "metadata": {
-                "description": "role Definition Id Name (Contributor)"
-            }
-        },
         "TS_resourceGroupName": {
             "type": "string",
             "defaultValue": "TemplateSpecs",
@@ -84,8 +77,7 @@
                     "policyDefinitionName03": {"value": "[variables('policyDefinitionName03')]"},
                     "policyDefinitionDisplayName03": {"value": "[variables('policyDefinitionDisplayName03')]"},
                     "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"},
-                    "policyDefinitionDisplayName04": {"value": "[variables('policyDefinitionDisplayName04')]"},
-                    "builtInRoleType": {"value": "[parameters('builtInRoleType')]"}
+                    "policyDefinitionDisplayName04": {"value": "[variables('policyDefinitionDisplayName04')]"}
                 }
             }
         },
@@ -112,8 +104,7 @@
                     "policyAssignmentDisplayName03": {"value": "[variables('policyAssignmentDisplayName03')]"},
                     "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"},
                     "policyAssignmentName04": {"value": "[variables('policyAssignmentName04')]"},
-                    "policyAssignmentDisplayName04": {"value": "[variables('policyAssignmentDisplayName04')]"},
-                    "builtInRoleType": {"value": "[parameters('builtInRoleType')]"},
+                    "policyAssignmentDisplayName04": {"value": "[variables('policyAssignmentDisplayName04')]"}
                     "location": {"value": "[parameters('targetRegion')]"},
                     "DefMgmtGroupLoc": {"value": "[parameters('targetMG')]"}
                 }

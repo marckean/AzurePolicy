@@ -53,6 +53,7 @@ More on deployment scopes here:
 [Management group deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-management-group?tabs=azure-cli)
 
 [Tenant deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-tenant?tabs=azure-cli)
+
 # Policy Remediation
 
 Policy **DeployIfNotExists** or **Modify** effect will take effect on any new or updated resources. Existing resources after they are scanned by the Policy Compliance Checker engine will need a remediation task kicked off or through code to get remediated. [From here](https://youtu.be/AVn5glYBz84?t=4279).
@@ -62,6 +63,26 @@ Policy assignments must include a 'managed identity' when assigning 'Modify' pol
 [Remediate non-compliant resources with Azure Policy](https://aka.ms/azurepolicyremediation)
 
 Resources that are non-compliant to a **deployIfNotExists** or **modify** policy can be put into a compliant state through **Remediation**. Remediation is accomplished by instructing Azure Policy to run the deployIfNotExists effect or the modify operations of the assigned policy on your existing resources and subscriptions, whether that assignment is to a management group, a subscription, a resource group, or an individual resource. This article shows the steps needed to understand and accomplish remediation with Azure Policy.
+
+## How remediation security works
+
+From [here](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#how-remediation-security-works), 
+
+When Azure Policy starts a template deployment when evaluating **deployIfNotExists** policies or **modifies** a resource when evaluating modify policies, it does so using a managed identity that is associated with the policy assignment. Policy assignments use managed identities for Azure resource authorization. You can use either a system-assigned managed identity that is created by the policy service or a user-assigned identity provided by the user. The managed identity needs to be assigned the minimum role-based access control (RBAC) role(s) required to remediate resources. If the managed identity is missing roles, an error is displayed during the assignment of the policy or an initiative. When using the portal, Azure Policy automatically grants the managed identity the listed roles once assignment starts. When using an Azure software development kit (SDK), the roles must manually be granted to the managed identity. The location of the managed identity doesn't impact its operation with Azure Policy.
+
+![](blobs/remediation-tab.png)
+
+> [!IMPORTANT]
+> In the following scenarios, the assignment's managed identity must be
+> [manually granted access](#manually-configure-the-managed-identity) or the remediation deployment
+> fails:
+>
+> - If the assignment is created through SDK
+> - If a resource modified by **deployIfNotExists** or **modify** is outside the scope of the policy
+>   assignment
+> - If the template accesses properties on resources outside the scope of the policy assignment
+>
+> Also, changing a a policy definition does not update the assignment or the associated managed identity.
 
 ## Enable remediation tasks
 
@@ -76,6 +97,12 @@ Once the policy assignment has appropriate rights, **use the Policy SDK to trigg
 - Run an environment unit test against the resources directly to validate their properties have changed
 
 Testing both the updated policy evaluation results and the environment directly provide confirmation that the remediation tasks changed what was expected and that the policy definition saw the compliance change as expected. 
+
+# Managed Identities
+
+From [here](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/troubleshoot-adding-apps#i-want-to-delete-an-application-but-the-delete-button-is-disabled), for servicePrincipals that correspond to a managed identity. Managed identities service principals can't be deleted in the Enterprise apps blade. You need to go to the Azure resource to manage it. Learn more about [Managed Identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview).
+
+It isn't a problem to leave these role assignments where the security principal has been deleted. If you like, you can remove these role assignments using steps that are similar to other role assignments. For information about how to remove role assignments, see [Remove Azure role assignments](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-remove).
 
 ## Policy Definition Structure
 
@@ -174,12 +201,6 @@ From [here](https://docs.microsoft.com/en-us/powershell/module/az.policyinsights
 $job = Start-AzPolicyComplianceScan -AsJob
 $job | Wait-Job
 ```
-
-# Managed Identities
-
-From [here](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/troubleshoot-adding-apps#i-want-to-delete-an-application-but-the-delete-button-is-disabled), for servicePrincipals that correspond to a managed identity. Managed identities service principals can't be deleted in the Enterprise apps blade. You need to go to the Azure resource to manage it. Learn more about [Managed Identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview).
-
-It isn't a problem to leave these role assignments where the security principal has been deleted. If you like, you can remove these role assignments using steps that are similar to other role assignments. For information about how to remove role assignments, see [Remove Azure role assignments](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-remove).
 
 ## Role assignments with identity not found
 
