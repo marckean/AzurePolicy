@@ -41,11 +41,18 @@
                 "description": "role Definition Id Name (Network Contributor)"
             }
         },
-        "KeyVaultBuiltInRoleName": {
+        "AdministratorKeyVaultBuiltInRoleName": {
             "type": "string",
             "defaultValue": "Key Vault Administrator",
             "metadata": {
                 "description": "role Definition Id Name (Key Vault Administrator)"
+            }
+        },
+        "ContributorKeyVaultBuiltInRoleName": {
+            "type": "string",
+            "defaultValue": "Key Vault Contributor",
+            "metadata": {
+                "description": "role Definition Id Name (Key Vault Contributor)"
             }
         },
         "location": {
@@ -63,6 +70,7 @@
         "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
         "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
         "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
+        "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
         "policies": {
             "policyAssignments": [
                 { // One
@@ -128,7 +136,7 @@
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName04'))]"
                     },
                     "roleAssignmentProperties": {
-                        "roleDefinitionId": "[variables(parameters('KeyVaultBuiltInRoleName'))]",
+                        "roleDefinitionId": "[variables(parameters('AdministratorKeyVaultBuiltInRoleName'))]",
                         "principalType": "ServicePrincipal"
                     },
                     "remediationProperties": {
@@ -163,23 +171,6 @@
                 "displayName": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.displayName]",
                 "enforcementMode": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.enforcementMode]",
                 "policyDefinitionId": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.policyDefinitionId]"
-            }
-        },
-        { // https://stackoverflow.com/questions/68388609/azure-policy-not-creating-roles-for-managed-identity-when-deployed-through-devop
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2020-10-01-preview",
-            "name": "[variables('policies').policyAssignments[copyIndex()].RoleAssignmentName]",
-            "copy": {
-                "name": "roleAssignmentCopy",
-                "count": "[length(variables('policies').policyAssignments)]"
-            },
-            "dependsOn": [
-                "policyAssignmentCopy"
-            ],
-            "properties": {
-                "roleDefinitionId": "[variables('policies').policyAssignments[copyIndex()].roleAssignmentProperties.roleDefinitionId]",
-                "principalType": "[variables('policies').policyAssignments[copyIndex()].roleAssignmentProperties.principalType]",
-                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', variables('policies').policyAssignments[copyIndex()].PolicyAssignmentName), '2021-06-01', 'full').identity.principalId]"
             }
         },
         { // https://docs.microsoft.com/en-us/azure/templates/microsoft.policyinsights/2019-07-01/remediations?tabs=json#remediationfilters

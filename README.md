@@ -83,6 +83,29 @@ Policy assignments must include a 'managed identity' when assigning 'Modify' pol
 
 Resources that are non-compliant to a **deployIfNotExists** or **modify** policy can be put into a compliant state through **Remediation**. Remediation is accomplished by instructing Azure Policy to run the deployIfNotExists effect or the modify operations of the assigned policy on your existing resources and subscriptions, whether that assignment is to a management group, a subscription, a resource group, or an individual resource. This article shows the steps needed to understand and accomplish remediation with Azure Policy.
 
+In order to automate this process, use the PowerShell script in this repo `AzPolicyRemediation.ps1`.
+
+```powershell
+# Find all custom Policy Definitions with an effect of Modify
+$CusModifyDefs = Get-AzPolicyDefinition | where { $_.properties.PolicyType -eq 'custom' -and $_.properties.PolicyRule.then.effect -eq 'Modify' } | select * -ExpandProperty Properties
+
+# Get the relevant Policy Assignment to the Definition
+$CusModifyAssignments = foreach ($CusModifyDef in $CusModifyDefs) {
+    Get-AzPolicyAssignment | where { $_.Properties.PolicyDefinitionId -eq $CusModifyDef.PolicyDefinitionId }
+}
+
+# Get Policy Rmediation for each of the custom modify assignments
+$CusModifyRemediations = foreach ($CusModifyAssignment in $CusModifyAssignments) {
+    Get-AzPolicyRemediation -Filter "PolicyAssignmentId eq '$($CusModifyAssignment.PolicyAssignmentId)'" | where {$_.PolicyDefinitionReferenceId}
+}
+
+# Kick off Policy Remediation Tasks
+foreach($CusModifyRemediation in $CusModifyRemediations){
+    Start-AzPolicyRemediation -Name $CusModifyRemediation.Name -PolicyAssignmentId $CusModifyRemediation.PolicyAssignmentId
+}
+
+```
+
 ## How remediation security works
 
 From [here](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#how-remediation-security-works), 
