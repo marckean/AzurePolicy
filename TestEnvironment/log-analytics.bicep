@@ -41,6 +41,84 @@ resource LA_Child01 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview
   })
 }
 
+resource DCR_AllSystemInformation 'Microsoft.Insights/dataCollectionRules@2021-04-01' = {
+  name: 'DCR_AllSystemInformation'
+  kind: 'Windows'
+  location: location
+  properties: {
+    dataSources: {
+      windowsEventLogs: [
+        {
+          streams: [
+            'Microsoft-Event'
+          ]
+          xPathQueries: [
+            '*[System[(Level=4 or Level=0)]]'
+          ]
+          name: 'AllSystemInformation'
+        }
+      ]
+    }
+    destinations: {
+      logAnalytics: [
+        {
+          workspaceResourceId: LA_Child01.id
+          name: LA_Child01.name
+        }
+      ]
+    }
+    dataFlows: [
+      {
+        streams: [
+          'Microsoft-Event'
+        ]
+        destinations: [
+          LA_Child01.name
+        ]
+      }
+    ]
+  }
+}
+
+resource DCR_AllSystemCritical 'Microsoft.Insights/dataCollectionRules@2021-04-01' = {
+  name: 'DCR_AllSystemCritical'
+  kind: 'Windows'
+  location: location
+  properties: {
+    dataSources: {
+      windowsEventLogs: [
+        {
+          streams: [
+            'Microsoft-Event'
+          ]
+          xPathQueries: [
+            '*[System[(Level=1)]]'
+          ]
+          name: 'AllSystemCritical'
+        }
+      ]
+    }
+    destinations: {
+      logAnalytics: [
+        {
+          workspaceResourceId: LA_Child01.id
+          name: LA_Child01.name
+        }
+      ]
+    }
+    dataFlows: [
+      {
+        streams: [
+          'Microsoft-Event'
+        ]
+        destinations: [
+          LA_Child01.name
+        ]
+      }
+    ]
+  }
+}
+
 resource DCR_AccountLockoutEvents 'Microsoft.Insights/dataCollectionRules@2021-04-01' = {
   name: 'DCR-AccountLockoutEvents'
   kind: 'Windows'
