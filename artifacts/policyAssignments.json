@@ -83,10 +83,6 @@
                         "enforcementMode": "Default",
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName01'))]"
                     },
-                    "roleAssignmentProperties": {
-                        "roleDefinitionId": "[variables(parameters('StorageBuiltInRoleName'))]",
-                        "principalType": "ServicePrincipal"
-                    },
                     "remediationProperties": {
                         "locations": ["[parameters('location')]"],
                         "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', 'AssSecTransStgAcct')]",                
@@ -109,10 +105,6 @@
                         "enforcementMode": "Default",
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName02'))]"
                     },
-                    "roleAssignmentProperties": {
-                        "roleDefinitionId": "[variables(parameters('NetworkBuiltInRoleName'))]",
-                        "principalType": "ServicePrincipal"
-                    },
                     "remediationProperties": {
                         "locations": ["[parameters('location')]"],
                         "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', 'AssNoRDPSSHInt')]",                
@@ -134,10 +126,6 @@
                         "displayName": "Azure KeyVault desired settings",
                         "enforcementMode": "Default",
                         "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName04'))]"
-                    },
-                    "roleAssignmentProperties": {
-                        "roleDefinitionId": "[variables(parameters('AdministratorKeyVaultBuiltInRoleName'))]",
-                        "principalType": "ServicePrincipal"
                     },
                     "remediationProperties": {
                         "locations": ["[parameters('location')]"],
@@ -195,7 +183,6 @@
                 "resourceCount": "[variables('policies').policyAssignments[copyIndex()].remediationProperties.resourceCount]"
             },
             "dependsOn": [
-                "roleAssignmentCopy",
                 "policyAssignmentCopy"
             ]
         },
