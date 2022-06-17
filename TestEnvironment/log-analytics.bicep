@@ -42,7 +42,7 @@ resource LA_Child01 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview
 }
 
 resource DCR_AllSystemInformation 'Microsoft.Insights/dataCollectionRules@2021-04-01' = {
-  name: 'DCR_AllSystemInformation'
+  name: 'DCR-AllSystemInformation'
   kind: 'Windows'
   location: location
   properties: {
@@ -81,7 +81,7 @@ resource DCR_AllSystemInformation 'Microsoft.Insights/dataCollectionRules@2021-0
 }
 
 resource DCR_AllSystemCritical 'Microsoft.Insights/dataCollectionRules@2021-04-01' = {
-  name: 'DCR_AllSystemCritical'
+  name: 'DCR-AllSystemCritical'
   kind: 'Windows'
   location: location
   properties: {

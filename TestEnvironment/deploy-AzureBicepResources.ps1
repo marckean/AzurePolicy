@@ -1,7 +1,6 @@
 param (
     $ManagementGroupId = "8efecb12-cbaa-4612-b850-e6a68c14d336",
-    $location = "australiaeast",
-    $ts_resourcegroupname = "TemplateSpecs"
+    $location = "australiaeast"
 )
 
 New-AzManagementGroupDeployment -Location $location -TemplateFile '.\TestEnvironment\main.bicep' -ManagementGroupId $ManagementGroupId

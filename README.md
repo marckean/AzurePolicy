@@ -304,6 +304,7 @@ Deploy Bicep to management group:
 ```json
 az deployment mg create --location australiaeast --management-group-id '8efecb12-cbaa-4612-b850-e6a68c14d336' --template-file ./main.bicep
 ```
+
 ## Deployment of Azure Policy
 
 Deploy JSON to management group. We are using nested templates in order to deploy this complete solution to Azure. Reason is, the **Policy Definitions** will be deployed to the root Management Group so they can be accessed by everything else in the hierarchy. The **Policy Assignments** will be deployed separately to child subscriptions. 
@@ -337,9 +338,19 @@ New-AzManagementGroupDeployment -Location $location -TemplateFile '.\deploy.json
 
 ```
 
-### Use relative path for linked templates
+## Use relative path for linked templates
 
 The **relativePath** property of Microsoft.Resources/deployments makes it easier to author linked templates. This property can be used to deploy a remote linked template at a location relative to the parent. This feature requires all template files to be staged and available at a remote URI, such as GitHub or Azure storage account. When the main template is called by using a URI from Azure PowerShell or Azure CLI, the child deployment URI is a combination of the parent and relativePath.
 
 [Use relative path for linked templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/linked-templates?tabs=azure-powershell#use-relative-path-for-linked-templates)
 
+## Configure data collection for the Azure Monitor agent
+
+### Extracting XPath queries from Windows Event Viewer
+
+From [here](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent#extracting-xpath-queries-from-windows-event-viewer)
+
+One of the ways to create XPath queries is to use Windows Event Viewer to extract XPath queries as shown below.
+*In step 5 when pasting over the 'Select Path' parameter value, you must append the log type category followed by '!' and then paste the copied value.
+
+![](blobs/data-collection-rule-extract-xpath.png)
