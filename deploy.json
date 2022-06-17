@@ -43,7 +43,8 @@
         "policyDefinitionName01": "DefSecTransStgAcct",
         "policyDefinitionName02": "DefNo_RDP_SSH",
         "policyDefinitionName03": "DefDenyCustRole",
-        "policyDefinitionName04": "DefKeyVault"
+        "policyDefinitionName04": "DefKeyVault",
+        "policyDefinitionName05": "DefDenyNSG_Rules"
     },
     "resources": [
         { // Management Group Scope - Definitions
@@ -61,7 +62,8 @@
                     "policyDefinitionName01": {"value": "[variables('policyDefinitionName01')]"},
                     "policyDefinitionName02": {"value": "[variables('policyDefinitionName02')]"},
                     "policyDefinitionName03": {"value": "[variables('policyDefinitionName03')]"},
-                    "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"}
+                    "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"},
+                    "policyDefinitionName05": {"value": "[variables('policyDefinitionName05')]"}
                 }
             }
         },
@@ -81,6 +83,7 @@
                     "policyDefinitionName02": {"value": "[variables('policyDefinitionName02')]"},
                     "policyDefinitionName03": {"value": "[variables('policyDefinitionName03')]"},
                     "policyDefinitionName04": {"value": "[variables('policyDefinitionName04')]"},
+                    "policyDefinitionName05": {"value": "[variables('policyDefinitionName05')]"},
                     "location": {"value": "[parameters('targetRegion')]"},
                     "DefMgmtGroupLoc": {"value": "[parameters('targetMG')]"}
                 }

@@ -27,6 +27,9 @@
         "policyDefinitionName04": {
             "type": "string"
         },
+        "policyDefinitionName05": {
+            "type": "string"
+        },
         "StorageBuiltInRoleName": {
             "type": "string",
             "defaultValue": "Storage Account Contributor",
@@ -227,7 +230,7 @@
         },
         { // Policy assignment, only with no remediation, deny only, not using CopyIndex
             "type": "Microsoft.Authorization/policyAssignments",
-            "apiVersion": "2020-03-01",
+            "apiVersion": "2020-09-01",
             "name": "AssDenyCustRole",
             "location": "[parameters('location')]",
             "identity": {
@@ -237,6 +240,20 @@
                 "displayName": "Deny deployment of a custom role which has the same permissions as the built-in owner role",
                 "enforcementMode": "Default",
                 "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName03'))]"
+            }
+        },
+        { // Policy assignment, only with no remediation, deny only, not using CopyIndex
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2020-09-01",
+            "name": "AssDenyNSG_Rules",
+            "location": "[parameters('location')]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "displayName": "Deny deployment of an NSG that contains NSG rules",
+                "enforcementMode": "Default",
+                "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName05'))]"
             }
         }
     ]

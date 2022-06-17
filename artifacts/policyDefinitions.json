@@ -21,6 +21,9 @@
         "policyDefinitionName04": {
             "type": "string"
         },
+        "policyDefinitionName05": {
+            "type": "string"
+        },
         "StorageBuiltInRoleName": {
             "type": "string",
             "defaultValue": "Storage Account Contributor",
@@ -328,6 +331,37 @@
                                         }
                                     ]
                                 }
+                            }
+                        },
+                        "parameters": {}
+                    }
+                },
+                {
+                    "name": "[parameters('policyDefinitionName05')]",
+                    "properties": {
+                        "displayName": "Deny deployment of an NSG that contains NSG rules",
+                        "policyType": "Custom",
+                        "mode": "All",
+                        "description": "Deny deployment of an NSG that contains NSG rules",
+                        "metadata": {
+                            "version": "2.0.0",
+                            "category": "Network"
+                        },
+                        "policyRule": {
+                            "if": {
+                                "allOf": [
+                                    {
+                                        "field": "type",
+                                        "equals": "Microsoft.Network/networkSecurityGroups"
+                                    },
+                                    {
+                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]",
+                                        "equals": "*"
+                                    }
+                                ]
+                            },
+                            "then": {
+                                "effect": "deny"
                             }
                         },
                         "parameters": {}
