@@ -3,6 +3,7 @@ param (
     $location = "australiaeast"
 )
 
+# All test resources, with the NSG and NSG rules as separate
 New-AzManagementGroupDeployment -Location $location -TemplateFile '.\TestEnvironment\main.bicep' -ManagementGroupId $ManagementGroupId
 
 # NSG with Rules - ONLY
