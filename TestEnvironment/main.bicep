@@ -69,7 +69,7 @@ module roleAssignment_01 './roleAssignment.bicep' = {
 }
 
 // Resource Group scope
-module nsg1 './nsg.bicep' = {
+module nsg1 './nsg_rules.bicep' = {
   scope: resourceGroup(subscriptionID, RG_name_01)
   name: 'Company_NSG_01'
   params: {
