@@ -313,10 +313,10 @@
                             "then": {
                                 "effect": "modify",
                                 "details": {
-                                    "roleDefinitionIds": [ 
+                                    "roleDefinitionIds": [
                                         "[variables(parameters('AdministratorKeyVaultBuiltInRoleName'))]",
                                         "[variables(parameters('ContributorKeyVaultBuiltInRoleName'))]"
-                                        ],
+                                    ],
                                     "conflictEffect": "audit",
                                     "operations": [
                                         {
@@ -356,7 +356,7 @@
                                     },
                                     {
                                         "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]",
-                                        "equals": "*"
+                                        "exists": true
                                     }
                                 ]
                             },
