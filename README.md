@@ -7,6 +7,7 @@
   - `deploy.json` is the parent template
   - `/artifacts/policyAssignments.json` and `/artifacts/policyDefinitions.json` are the two child templates
   - `/artifacts/policyDefinitions.json` is deployed to the Management Group Scope. Policy Definitions live in the root Management Group.
+    - A custom policy definition deployed to a management group is implemented as an [extension resource](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-resource#extensionresourceid).
   - `/artifacts/policyAssignments.json` is deployed to the Subscription scope. Policy Assignments live in lower levels of the hierarchy e.g. a subscription.
 
 The two **child** templates `policyAssignments.json` and `policyDefinitions.json` live in Azure, in which the **parent** template `deploy.json` calls on at deployment time. 
@@ -63,7 +64,7 @@ Why we're using a PowerShell script because the nested templates have to live so
 
 ## Deployment Scope
 
-Above we're using the deployment scope for the parent template `deploy.json` to the **Management Group**. Reason being this is the upper most level int he scope and allows us to then deploy the **child** templates `policyAssignments.json` and `policyDefinitions.json` to either the **Management Group** or **subscription**. More on deployment scopes here:
+Above we're using the deployment scope for the parent template `deploy.json` to the **Management Group**. Reason being this is the upper most level in the scope and allows us to then deploy the **child** templates `policyAssignments.json` and `policyDefinitions.json` to either the **Management Group** or **subscription**. More on deployment scopes here:
 
 [Resource group deployments with ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-resource-group?tabs=azure-cli)
 
