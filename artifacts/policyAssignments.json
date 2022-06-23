@@ -175,6 +175,7 @@
             },
 
             "properties": {
+                
                 "displayName": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.displayName]",
                 "enforcementMode": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.enforcementMode]",
                 "policyDefinitionId": "[variables('policies').policyAssignments[copyIndex()].policyAssignmentProperties.policyDefinitionId]",
@@ -251,7 +252,7 @@
                 "type": "SystemAssigned"
             },
             "properties": {
-                "displayName": "Deny deployment of an NSG that contains NSG rules",
+                "displayName": "Deny deployment of an NSG that contains NSG rules with port 22 or 3389 as destination ports",
                 "enforcementMode": "Default",
                 "policyDefinitionId": "[extensionResourceId(variables('DefMgmtGroupLoc'), 'Microsoft.Authorization/policyDefinitions', parameters('policyDefinitionName05'))]"
             }

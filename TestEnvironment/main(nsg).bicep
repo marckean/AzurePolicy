@@ -18,9 +18,18 @@ module RG_01 './resource-group.bicep' = {
 }
 
 // Resource Group scope
-module nsg1 './nsg.bicep' = {
+module nsg1 './nsg_22_3389.bicep' = {
   scope: resourceGroup(subscriptionID, RG_name)
-  name: 'Company_NSG_01'
+  name: 'Company_NSG_22_3389_01'
+  params: {
+    location: RG_01.outputs.RGLocation
+  }
+}
+
+// Resource Group scope
+module nsg2 './nsg_443.bicep' = {
+  scope: resourceGroup(subscriptionID, RG_name)
+  name: 'Company_NSG_443_01'
   params: {
     location: RG_01.outputs.RGLocation
   }

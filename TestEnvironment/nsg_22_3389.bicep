@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 
 resource nsg1 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
-    name: 'nsg_with_rules'
+    name: 'nsg_with_22_3389_rules'
     location: location
     properties: {
         securityRules: [ //Rules cannot have the same Priority and Direction

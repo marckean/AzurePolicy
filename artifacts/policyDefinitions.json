@@ -339,10 +339,10 @@
                 {
                     "name": "[parameters('policyDefinitionName05')]",
                     "properties": {
-                        "displayName": "Deny deployment of an NSG that contains NSG rules",
+                        "displayName": "Deny deployment of an NSG that contains NSG rules with port 22 or 3389 as destination ports",
                         "policyType": "Custom",
                         "mode": "All",
-                        "description": "Deny deployment of an NSG that contains NSG rules",
+                        "description": "Deny deployment of an NSG that contains NSG rules with port 22 or 3389 as destination ports",
                         "metadata": {
                             "version": "2.0.0",
                             "category": "Network"
@@ -357,6 +357,46 @@
                                     {
                                         "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]",
                                         "exists": true
+                                    },
+                                    {
+                                        "anyOf": [ // Destination ports
+                                            {
+                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
+                                                "equals": "22"
+                                            },
+                                            {
+                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
+                                                "equals": "3389"
+                                            },
+                                            { // dashes, hyphens
+                                                "value": "[[if(and(not(empty(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'))), contains(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'),'-')), and(lessOrEquals(int(first(split(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'), '-'))),3389),greaterOrEquals(int(last(split(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'), '-'))),3389)), 'false')]",
+                                                "equals": "true"
+                                            },
+                                            { // dashes, hyphens
+                                                "value": "[[if(and(not(empty(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'))), contains(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'),'-')), and(lessOrEquals(int(first(split(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'), '-'))),22),greaterOrEquals(int(last(split(field('Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange'), '-'))),22)), 'false')]",
+                                                "equals": "true"
+                                            },
+                                            { // Array of ports
+                                                "count": {
+                                                    "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRanges[*]",
+                                                    "where": {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRanges[*]",
+                                                        "equals": "3389"
+                                                    }
+                                                },
+                                                "greater": 0
+                                            },
+                                            { // Array of ports
+                                                "count": {
+                                                    "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRanges[*]",
+                                                    "where": {
+                                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRanges[*]",
+                                                        "equals": "22"
+                                                    }
+                                                },
+                                                "greater": 0
+                                            }
+                                        ]
                                     }
                                 ]
                             },
