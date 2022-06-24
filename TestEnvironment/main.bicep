@@ -6,6 +6,7 @@ param location string = 'australiaeast'
 
 var subscriptionID = '7ac51792-8ea1-4ea8-be56-eb515e42aadf'
 var tenantID = '8efecb12-cbaa-4612-b850-e6a68c14d336'
+var ManagemantGroup = 'Test'
 
 //https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-to-management-group?tabs=azure-cli
 
@@ -62,7 +63,7 @@ module userAssignedIdentity_02 './userAssignedIdentity.bicep' = {
 // Management Group scope
 module roleAssignment_01 './roleAssignment.bicep' = {
   name: 'Company_roleAssignment_01'
-  scope: managementGroup('Test')
+  scope: managementGroup(ManagemantGroup)
   params: {
     principalId: userAssignedIdentity_01.outputs.principalId
   }
@@ -91,8 +92,17 @@ module kv1 './KeyVault.bicep' = {
 // Resource Group scope
 module la1 './log-analytics.bicep' = {
   scope: resourceGroup(subscriptionID, RG_name_02)
-  name: 'Company_KeyVault_01'
+  name: 'Company_LogAnalytics_01'
   params: {
-    location: RG_02.outputs.RGLocation
+    location: RG_01.outputs.RGLocation
+  }
+}
+
+// Subscription Group scope
+module pa1 './policy_assignments.bicep' = {
+  scope: subscription(subscriptionID)
+  name: 'Company_PolicyAssignment_01'
+  params: {
+    location: RG_01.outputs.RGLocation
   }
 }
