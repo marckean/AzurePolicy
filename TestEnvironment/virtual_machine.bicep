@@ -1,56 +1,51 @@
-param virtualMachineName01 string = 'LA-Test-DCR-01'
-param virtualNetworkName01 string = 'Company_03-vnet'
-param networkInterfaces_la_test_dcr_01273_name string = 'la-test-dcr-01273'
-param location string = resourceGroup().location
+param virtualMachineName01 string
+param networkInterfaceName01 string
+param location string
+param adminUsername string
+param adminPassword string
+param virtualMachineSize string
 
-resource virtualMachineName01_resource 'Microsoft.Compute/virtualMachines@2022-03-01' = {
+var NICId = resourceId('Microsoft.Network/networkInterfaces', networkInterfaceName01)
+
+resource virtualMachine_01 'Microsoft.Compute/virtualMachines@2022-03-01' = {
   name: virtualMachineName01
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_B2ms'
+      vmSize: virtualMachineSize
     }
     storageProfile: {
+      osDisk: {
+        createOption: 'FromImage'
+        managedDisk: {
+          storageAccountType: 'StandardSSD_LRS'
+        }
+        deleteOption: 'Delete'
+      }
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
-        sku: '2022-datacenter-azure-edition'
+        sku: '2019-datacenter-smalldisk-g2'
         version: 'latest'
       }
-      osDisk: {
-        osType: 'Windows'
-        name: '${virtualMachineName01}_OsDisk_1_2d0a37885cd742ceb4976621226c9782'
-        createOption: 'FromImage'
-        caching: 'ReadWrite'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-          id: resourceId('Microsoft.Compute/disks', '${virtualMachineName01}_OsDisk_1_2d0a37885cd742ceb4976621226c9782')
-        }
-        deleteOption: 'Delete'
-        diskSizeGB: 127
-      }
-      dataDisks: []
     }
     osProfile: {
       computerName: virtualMachineName01
-      adminUsername: 'marckean'
+      adminUsername: adminUsername
+      adminPassword: adminPassword
       windowsConfiguration: {
-        provisionVMAgent: true
         enableAutomaticUpdates: true
+        provisionVMAgent: true
         patchSettings: {
-          patchMode: 'AutomaticByOS'
-          assessmentMode: 'ImageDefault'
           enableHotpatching: false
+          patchMode: 'AutomaticByOS'
         }
       }
-      secrets: []
-      allowExtensionOperations: true
-      requireGuestProvisionSignal: true
     }
     networkProfile: {
       networkInterfaces: [
         {
-          id: networkInterfaces_la_test_dcr_01273_name_resource.id
+          id: NICId
           properties: {
             deleteOption: 'Detach'
           }
@@ -62,31 +57,5 @@ resource virtualMachineName01_resource 'Microsoft.Compute/virtualMachines@2022-0
         enabled: true
       }
     }
-  }
-}
-
-resource networkInterfaces_la_test_dcr_01273_name_resource 'Microsoft.Network/networkInterfaces@2020-11-01' = {
-  name: networkInterfaces_la_test_dcr_01273_name
-  location: 'australiaeast'
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          privateIPAddress: '10.3.0.4'
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: virtualNetworkName01_default.id
-          }
-          primary: true
-          privateIPAddressVersion: 'IPv4'
-        }
-      }
-    ]
-    dnsSettings: {
-      dnsServers: []
-    }
-    enableAcceleratedNetworking: false
-    enableIPForwarding: false
   }
 }

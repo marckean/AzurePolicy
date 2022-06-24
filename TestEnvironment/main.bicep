@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
 
-param RG_01 string = 'Company_01'
+param RG_01 string = 'Company_Tier1'
 param RG_02 string = 'Company_PaaS'
 param RG_03 string = 'Company_IaaS'
 param RG_04 string = 'Company_Network'
@@ -36,7 +36,7 @@ module resourceGroup_02 './resource-group.bicep' = {
 // Resource Group scope
 module StorageAccount_01 './storage-account.bicep' = {
   name: 'Company_StorageAccount_01'
-  scope: resourceGroup(subscriptionID, RG_02)
+  scope: resourceGroup(subscriptionID, RG_05)
   params: {
     location: resourceGroup_01.outputs.RGLocation
     globalRedundancy: bool(false)
@@ -116,6 +116,23 @@ module virtual_Network_01 './virtual_network.bicep' = {
   name: 'Company_VirtualNetwork_01'
   params: {
     location: resourceGroup_01.outputs.RGLocation
+    virtualNetworkName01: 'Company_03-vnet'
+    subnetName: 'default'
+    subnetAddressPrefix: '10.3.0.0/24'
+    bastionSubnetAddressPrefix: '10.3.250.0/26'
+    addressSpace_addressPrefixes: ['10.3.0.0/16']
+  }
+}
+
+// Resource Group scope
+module nic_01 './network_interface_card.bicep' = {
+  scope: resourceGroup(subscriptionID, RG_04)
+  name: 'Company_NIC_01'
+  params: {
+    location: resourceGroup_01.outputs.RGLocation
+    virtualNetworkName01: 'Company_03-vnet'
+    subnetName: 'default'
+    networkInterfaceName01: 'LA-Test-DCR-01-NIC'
   }
 }
 
@@ -125,5 +142,20 @@ module virtual_Machine_01 './virtual_machine.bicep' = {
   name: 'Company_VirtualMachine_01'
   params: {
     location: resourceGroup_01.outputs.RGLocation
+    virtualMachineName01: 'LA-Test-DCR-01'
+    networkInterfaceName01: 'LA-Test-DCR-01-NIC'
+    adminUsername: 'marckean'
+    adminPassword: 'Passw0rd2022'
+    virtualMachineSize: 'Standard_B2ms'
+  }
+}
+
+// Resource Group scope
+module bastion_01 './bastion.bicep' = {
+  scope: resourceGroup(subscriptionID, RG_04)
+  name: 'Company_Bastion_01'
+  params: {
+    location: resourceGroup_01.outputs.RGLocation
+    bastionName01: 'Company_03-bastion'
   }
 }
