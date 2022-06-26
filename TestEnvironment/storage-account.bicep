@@ -1,36 +1,22 @@
-param location string = resourceGroup().location
-param globalRedundancy bool = false
+param location string
+param storageAccountNamePrefex string
+param minimumTlsVersion string
+param supportsHttpsTrafficOnly bool
+param allowBlobPublicAccess bool
+param storageSku string
 
-var WrongStorageAccountName = '${'wrong'}${uniqueString(resourceGroup().id)}' // generates unique name based on resource group ID
-var RightStorageAccountName = '${'right'}${uniqueString(resourceGroup().id)}' // generates unique name based on resource group ID
-var storageSku = globalRedundancy ? 'Standard_GRS' : 'Standard_LRS' // if true --> GRS, else --> LRS
- 
-resource stg1 'Microsoft.Storage/storageAccounts@2019-06-01' = {
-    name: WrongStorageAccountName
+resource storageAcct 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+    name: '${storageAccountNamePrefex}${uniqueString(resourceGroup().id)}'
     location: location
-    kind: 'Storage'
     sku: {
         name: storageSku
     }
-    properties:{
-        minimumTlsVersion: 'TLS1_0'
-        supportsHttpsTrafficOnly: false
-        allowBlobPublicAccess: true
+    kind: 'Storage'
+    properties: {
+        minimumTlsVersion: minimumTlsVersion
+        supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
+        allowBlobPublicAccess: allowBlobPublicAccess
     }
 }
 
-resource stg2 'Microsoft.Storage/storageAccounts@2019-06-01' = {
-    name: RightStorageAccountName
-    location: location
-    kind: 'Storage'
-    sku: {
-        name: storageSku
-    }
-    properties:{
-        minimumTlsVersion: 'TLS1_2'
-        supportsHttpsTrafficOnly: true
-        allowBlobPublicAccess: false
-    }
-}
- 
-output storageId string = stg1.id
+output storageId string = storageAcct.id

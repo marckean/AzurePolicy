@@ -1,14 +1,14 @@
-param virtualMachineName01 string
-param networkInterfaceName01 string
+param virtualMachineName string
+param networkInterfaceName string
 param location string
 param adminUsername string
 param adminPassword string
 param virtualMachineSize string
 
-var NICId = resourceId('Microsoft.Network/networkInterfaces', networkInterfaceName01)
+var NICId = resourceId('Microsoft.Network/networkInterfaces', networkInterfaceName)
 
-resource virtualMachine_01 'Microsoft.Compute/virtualMachines@2022-03-01' = {
-  name: virtualMachineName01
+resource virtualMachine_01 'Microsoft.Compute/virtualMachines@2021-11-01' = {
+  name: virtualMachineName
   location: location
   properties: {
     hardwareProfile: {
@@ -30,7 +30,7 @@ resource virtualMachine_01 'Microsoft.Compute/virtualMachines@2022-03-01' = {
       }
     }
     osProfile: {
-      computerName: virtualMachineName01
+      computerName: virtualMachineName
       adminUsername: adminUsername
       adminPassword: adminPassword
       windowsConfiguration: {

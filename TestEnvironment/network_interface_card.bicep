@@ -1,9 +1,9 @@
-param virtualNetworkName01 string
+param virtualNetworkName string
 param subnetName string
 param networkInterfaceName01 string
 param location string
 
-var vnetId = resourceId('Microsoft.Network/virtualNetworks', virtualNetworkName01)
+var vnetId = resourceId('Microsoft.Network/virtualNetworks', virtualNetworkName)
 var subnetRef = '${vnetId}/subnets/${subnetName}'
 
 resource networkInterface_01 'Microsoft.Network/networkInterfaces@2020-11-01' = {

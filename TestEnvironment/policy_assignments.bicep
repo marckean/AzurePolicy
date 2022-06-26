@@ -7,9 +7,9 @@ param ManagemantGroup string = 'Test'
 @description('Specifies the name of the policy assignment, can be used defined or an idempotent name as the defaultValue provides.')
 var policyAssignmentName01 = guid(BuiltIn_PolicyDefinitionID, subscription().displayName)
 var DefMgmtGroupLoc_var = tenantResourceId('Microsoft.Management/managementGroups', ManagemantGroup)
-var Owner = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+//var Owner = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
 var Contributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-var Reader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+//var Reader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
 var policyDefinitionName01 = 'Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule'
 var policyAssignmentDisplayName01 = 'Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule'
 
@@ -27,7 +27,10 @@ resource policyAssignment01 'Microsoft.Authorization/policyAssignments@2021-06-0
         displayName: policyAssignmentDisplayName01
         enforcementMode: 'Default'
         //scope: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', policyDefinitionID)
-        policyDefinitionId: tenantResourceId('Microsoft.Authorization/policyDefinitions', BuiltIn_PolicyDefinitionID)
+        policyDefinitionId: tenantResourceId('Microsoft.Authorization/policySetDefinitions', BuiltIn_PolicyDefinitionID)
+        parameters:{
+            DcrResourceId: reference('Microsoft.Insights/dataCollectionRules', 'AllSystemInformation').id
+        }
     }
 }
 
