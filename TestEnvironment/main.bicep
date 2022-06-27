@@ -179,6 +179,7 @@ module pa1 './policy_assignments.bicep' = {
   name: 'Company_PolicyAssignment_01'
   params: {
     location: resourceGroupModule[0].outputs.RGLocation
+    DCR_ResourceGroupName: resourceGroups_var[1].resourceGroupName
   }
 }
 

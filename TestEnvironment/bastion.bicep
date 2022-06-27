@@ -4,6 +4,7 @@ param virtualNetworkName string
 param azureBastionPublicIpName string
 
 var azureBastionPublicIpId = resourceId('Microsoft.Network/publicIPAddresses', azureBastionPublicIpName)
+var vNetId = resourceId('Microsoft.Network/virtualNetworks', virtualNetworkName)
 
 resource bastion01 'Microsoft.Network/bastionHosts@2021-08-01' = {
   name: bastionName
@@ -22,7 +23,7 @@ resource bastion01 'Microsoft.Network/bastionHosts@2021-08-01' = {
             id: azureBastionPublicIpId
           }
           subnet: {
-            id: '${virtualNetworkName}/subnets/AzureBastionSubnet'
+            id: '${vNetId}/subnets/AzureBastionSubnet'
           }
         }
       }
