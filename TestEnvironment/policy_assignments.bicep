@@ -3,6 +3,7 @@ targetScope = 'subscription'
 param BuiltIn_PolicyDefinitionID string = '9575b8b7-78ab-4281-b53b-d3c1ace2260b' //Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule
 param location string = 'australiaeast'
 param ManagemantGroup string = 'Test'
+param DcrResourceId string = resourceId('Microsoft.Insights/dataCollectionRules', 'AllSystemInformation')
 
 @description('Specifies the name of the policy assignment, can be used defined or an idempotent name as the defaultValue provides.')
 var policyAssignmentName01 = guid(BuiltIn_PolicyDefinitionID, subscription().displayName)
@@ -29,7 +30,9 @@ resource policyAssignment01 'Microsoft.Authorization/policyAssignments@2021-06-0
         //scope: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', policyDefinitionID)
         policyDefinitionId: tenantResourceId('Microsoft.Authorization/policySetDefinitions', BuiltIn_PolicyDefinitionID)
         parameters:{
-            DcrResourceId: reference('Microsoft.Insights/dataCollectionRules', 'AllSystemInformation').id
+            DcrResourceId: {
+                value: DcrResourceId
+            }
         }
     }
 }

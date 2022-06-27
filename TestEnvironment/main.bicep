@@ -48,7 +48,7 @@ var subnets_var = [
     virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
     privateEndpointNetworkPolicies: 'Enabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    subnetAddressPrefix: '10.3.0.0/24'
+    addressPrefix: '10.3.0.0/24'
   }
   {
     name: 'Company_Subnet_02'
@@ -56,7 +56,7 @@ var subnets_var = [
     virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
     privateEndpointNetworkPolicies: 'Enabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    subnetAddressPrefix: '10.3.250.0/26' 
+    addressPrefix: '10.3.250.0/26' 
   }
 ]
 
@@ -182,25 +182,14 @@ module pa1 './policy_assignments.bicep' = {
   }
 }
 
-// Resource Group scope
-module virtual_Network_Module './virtual_network.bicep' = [for virtualNetwork in virtualNetworks_var: {
+module virtual_Network_with_subnet_Module './virtual_network_with_subnet.bicep' = [for virtualNetwork in virtualNetworks_var: {
   scope: resourceGroup(subscriptionID, resourceGroups_var[3].resourceGroupName)
   name: virtualNetwork.name
   params: {
     location: resourceGroupModule[0].outputs.RGLocation
     virtualNetworkName: virtualNetwork.virtualNetworkName
     addressSpace_addressPrefixes: virtualNetwork.addressSpace_addressPrefixes
-  }
-}]
-
-// Resource Group scope
-module subnet_Module './virtual_network_subnet.bicep' = [for subnet in subnets_var: {
-  scope: resourceGroup(subscriptionID, resourceGroups_var[3].resourceGroupName)
-  name: subnet.name
-  params: {
-    virtualNetworkName: subnet.virtualNetworkName
-    subnetName: subnet.subnetName
-    subnetAddressPrefix: subnet.subnetAddressPrefix
+    subnets: subnets_var
   }
 }]
 
@@ -224,9 +213,23 @@ module virtual_Machine_01 './virtual_machine.bicep' = {
     location: resourceGroupModule[0].outputs.RGLocation
     virtualMachineName: 'LA-Test-DCR-01'
     networkInterfaceName: 'LA-Test-DCR-01-NIC'
+    networkInterfaceResourceGroupName: resourceGroups_var[3].resourceGroupName
     adminUsername: 'marckean'
     adminPassword: 'Passw0rd2022'
     virtualMachineSize: 'Standard_B2ms'
+  }
+  dependsOn: [
+    nic_01
+  ]
+}
+
+// Resource Group scope
+module PIP_module './public_IP_address.bicep' = {
+  scope: resourceGroup(subscriptionID, resourceGroups_var[3].resourceGroupName)
+  name: 'Company_BastionPIP_01'
+  params: {
+    location: resourceGroupModule[0].outputs.RGLocation
+    name: 'Company_PIP'
   }
 }
 
@@ -237,5 +240,7 @@ module bastion_01 './bastion.bicep' = {
   params: {
     location: resourceGroupModule[0].outputs.RGLocation
     bastionName: 'Company_Bastion'
+    virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
+    azureBastionPublicIpName: PIP_module.name
   }
 }

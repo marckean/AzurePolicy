@@ -1,6 +1,6 @@
 param location string = resourceGroup().location
 
-var securityRules1 = [
+var securityRules = [
   {
     name: 'Allow_RDP1-S'
     description: 'Allow RDP'
@@ -146,9 +146,6 @@ var securityRules1 = [
     priority: 270
     direction: 'Inbound'
   }
-]
-
-var securityRules2 = [ //sourcePortRanges
   {
     name: 'Allow_RDP2-S'
     description: 'Allow RDP'
@@ -180,9 +177,6 @@ var securityRules2 = [ //sourcePortRanges
     priority: 210
     direction: 'Inbound'
   }
-]
-
-var securityRules3 = [ //destinationPortRanges
   {
     name: 'Allow_RDP5-D'
     description: 'Allow RDP'
@@ -221,53 +215,21 @@ resource nsg1 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
   properties: {}
 }
 
-resource nsgrules1 'Microsoft.Network/networkSecurityGroups/securityRules@2021-08-01' = [for rule in securityRules1: {
+resource nsgrules1 'Microsoft.Network/networkSecurityGroups/securityRules@2021-08-01' = [for rule in securityRules: {
   name: rule.name
   parent: nsg1
   properties: {
-    description: rule.description
-    direction: rule.direction
-    protocol: rule.protocol
-    access: rule.access
-    destinationPortRange: rule.destinationPortRange
-    sourcePortRange: rule.sourcePortRange
-    destinationAddressPrefix: rule.destinationAddressPrefix
-    sourceAddressPrefix: rule.sourceAddressPrefix
-    priority: rule.priority
-  }
-}]
-
-//sourcePortRanges
-resource nsgrules2 'Microsoft.Network/networkSecurityGroups/securityRules@2021-08-01' = [for rule in securityRules2: {
-  name: rule.name
-  parent: nsg1
-  properties: {
-    description: rule.description
-    direction: rule.direction
-    protocol: rule.protocol
-    access: rule.access
-    destinationPortRange: rule.destinationPortRange
-    sourcePortRanges: rule.sourcePortRanges
-    destinationAddressPrefix: rule.destinationAddressPrefix
-    sourceAddressPrefix: rule.sourceAddressPrefix
-    priority: rule.priority
-  }
-}]
-
-//destinationPortRanges
-resource nsgrules3 'Microsoft.Network/networkSecurityGroups/securityRules@2021-08-01' = [for rule in securityRules3: {
-  name: rule.name
-  parent: nsg1
-  properties: {
-    description: rule.description
-    direction: rule.direction
-    protocol: rule.protocol
-    access: rule.access
-    destinationPortRanges: rule.destinationPortRanges
-    sourcePortRange: rule.sourcePortRange
-    destinationAddressPrefix: rule.destinationAddressPrefix
-    sourceAddressPrefix: rule.sourceAddressPrefix
-    priority: rule.priority
+    description: contains(rule, 'description') ? rule.description : ''
+    direction: contains(rule, 'direction') ? rule.direction : ''
+    protocol: contains(rule, 'protocol') ? rule.protocol : ''
+    access: contains(rule, 'access') ? rule.access : ''
+    destinationPortRange: contains(rule, 'destinationPortRange') ? rule.destinationPortRange : ''
+    destinationPortRanges: contains(rule, 'destinationPortRanges') ? rule.destinationPortRanges : []
+    sourcePortRange: contains(rule, 'sourcePortRange') ? rule.sourcePortRange : ''
+    sourcePortRanges: contains(rule, 'sourcePortRanges') ? rule.sourcePortRanges : []
+    destinationAddressPrefix: contains(rule, 'destinationAddressPrefix') ? rule.destinationAddressPrefix : ''
+    sourceAddressPrefix: contains(rule, 'sourceAddressPrefix') ? rule.sourceAddressPrefix : ''
+    priority: contains(rule, 'priority') ? rule.priority : ''
   }
 }]
 

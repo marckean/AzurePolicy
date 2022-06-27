@@ -1,11 +1,12 @@
 param virtualMachineName string
 param networkInterfaceName string
+param networkInterfaceResourceGroupName string
 param location string
 param adminUsername string
 param adminPassword string
 param virtualMachineSize string
 
-var NICId = resourceId('Microsoft.Network/networkInterfaces', networkInterfaceName)
+var NICId = resourceId(networkInterfaceResourceGroupName, 'Microsoft.Network/networkInterfaces', networkInterfaceName)
 
 resource virtualMachine_01 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   name: virtualMachineName

@@ -1,5 +1,9 @@
 param bastionName string
 param location string
+param virtualNetworkName string
+param azureBastionPublicIpName string
+
+var azureBastionPublicIpId = resourceId('Microsoft.Network/publicIPAddresses', azureBastionPublicIpName)
 
 resource bastion01 'Microsoft.Network/bastionHosts@2021-08-01' = {
   name: bastionName
@@ -10,5 +14,18 @@ resource bastion01 'Microsoft.Network/bastionHosts@2021-08-01' = {
   properties: {
     enableFileCopy: true
     disableCopyPaste: false
+    ipConfigurations: [
+      {
+        name: 'IpConfAzureBastionSubnet'
+        properties: {
+          publicIPAddress: {
+            id: azureBastionPublicIpId
+          }
+          subnet: {
+            id: '${virtualNetworkName}/subnets/AzureBastionSubnet'
+          }
+        }
+      }
+    ]
   }
 }
