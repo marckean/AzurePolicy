@@ -1,5 +1,7 @@
 # Find all custom Policy Definitions with an effect of Modify
-$CusModifyDefs = Get-AzPolicyDefinition | where { $_.properties.PolicyType -eq 'custom' -and $_.properties.PolicyRule.then.effect -eq 'Modify' } | select * -ExpandProperty Properties
+$CusModifyDefs = Get-AzPolicyDefinition | where { $_.properties.PolicyType -eq 'custom' -and $_.properties.PolicyRule.then.effect -eq 'DeployIfNotExists' } | select * -ExpandProperty Properties
+
+$CusModifyDefs = (Get-AzPolicyDefinition | where { $_.properties.PolicyType -eq 'builtin' -and $_.properties.PolicyRule.then.effect -eq 'DeployIfNotExists' } | select * -ExpandProperty Properties).count
 
 # Get the relevant Policy Assignment to the Definition
 $CusModifyAssignments = foreach ($CusModifyDef in $CusModifyDefs) {
