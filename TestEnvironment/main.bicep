@@ -200,7 +200,7 @@ module nic_01 './network_interface_card.bicep' = {
   name: 'Company_NIC_01'
   params: {
     location: resourceGroupModule[0].outputs.RGLocation
-    virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
+    virtualNetworkName: virtual_Network_with_subnet_Module[0].outputs.name
     subnetName: subnets_var[0].subnetName
     networkInterfaceName01: 'LA-Test-DCR-01-NIC'
   }
@@ -242,6 +242,6 @@ module bastion_01 './bastion.bicep' = {
     location: resourceGroupModule[0].outputs.RGLocation
     bastionName: 'Company_Bastion'
     virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
-    azureBastionPublicIpName: PIP_module.name
+    azureBastionPublicIpName: PIP_module.outputs.name
   }
 }

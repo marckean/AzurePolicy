@@ -19,6 +19,7 @@ resource bastion01 'Microsoft.Network/bastionHosts@2021-08-01' = {
       {
         name: 'IpConfAzureBastionSubnet'
         properties: {
+          privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
             id: azureBastionPublicIpId
           }
