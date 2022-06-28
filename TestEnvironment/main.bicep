@@ -175,14 +175,16 @@ module la1 './log-analytics.bicep' = {
 
 // Subscription Group scope
 module pa1 './policy_assignments.bicep' = {
-  scope: subscription(subscriptionID)
+  //scope: subscription(subscriptionID)
+  scope: resourceGroup(subscriptionID, resourceGroups_var[1].resourceGroupName)
   name: 'Company_PolicyAssignment_01'
   params: {
     location: resourceGroupModule[0].outputs.RGLocation
-    //DCR_ResourceGroupName: resourceGroups_var[1].resourceGroupName
+    DCR_ResourceGroupName: resourceGroups_var[1].resourceGroupName
   }
 }
 
+// Resource Group scope
 module virtual_Network_with_subnet_Module './virtual_network_with_subnet.bicep' = [for virtualNetwork in virtualNetworks_var: {
   scope: resourceGroup(subscriptionID, resourceGroups_var[3].resourceGroupName)
   name: virtualNetwork.name

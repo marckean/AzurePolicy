@@ -1,9 +1,8 @@
-targetScope = 'subscription'
 @description('Specifies the ID of the policy definition or policy set definition being assigned.')
 param BuiltIn_PolicyDefinitionID string = '9575b8b7-78ab-4281-b53b-d3c1ace2260b' //Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule
 param location string = 'australiaeast'
 param ManagemantGroup string = 'Test'
-//param DCR_ResourceGroupName string
+param DCR_ResourceGroupName string
 
 @description('Specifies the name of the policy assignment, can be used defined or an idempotent name as the defaultValue provides.')
 var policyAssignmentName01 = guid(BuiltIn_PolicyDefinitionID, subscription().displayName)
@@ -13,7 +12,7 @@ var Contributor = subscriptionResourceId('Microsoft.Authorization/roleDefinition
 //var Reader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
 var policyDefinitionName01 = 'Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule'
 var policyAssignmentDisplayName01 = 'Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule'
-var DcrResourceId = reference(resourceId('Microsoft.Insights/dataCollectionRules', 'AllSystemInformation'))
+
 
 // https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-bicep
 
@@ -32,7 +31,7 @@ resource policyAssignment01 'Microsoft.Authorization/policyAssignments@2021-06-0
         policyDefinitionId: tenantResourceId('Microsoft.Authorization/policySetDefinitions', BuiltIn_PolicyDefinitionID)
         parameters:{
             DcrResourceId: {
-                value: DcrResourceId
+                value: resourceId(subscription().subscriptionId, DCR_ResourceGroupName, 'Microsoft.Insights/dataCollectionRules', 'AllSystemInformation')
             }
         }
     }
