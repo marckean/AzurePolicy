@@ -239,6 +239,7 @@ resource DCR_ExploitProtectionEvents 'Microsoft.Insights/dataCollectionRules@202
           name: 'ExploitProtectionEvents'
         }
       ]
+      syslog:
     }
     destinations: {
       logAnalytics: [

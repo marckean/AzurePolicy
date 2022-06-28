@@ -345,7 +345,44 @@ The **relativePath** property of Microsoft.Resources/deployments makes it easier
 
 [Use relative path for linked templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/linked-templates?tabs=azure-powershell#use-relative-path-for-linked-templates)
 
-## Configure data collection for the Azure Monitor agent
+# Configure data collection for the Azure Monitor agent
+
+The requirement is for Azure Monitor agents to be installed on VMs inside of Azure in an automatic fashion. Once a VM is deployed, then this VM is associated with one or more `destination` Log Analytics workspace/s with configuration as to what `dataSources` are configured for this VM. This is all controlled by a **Data Collection Rule**.
+
+A **Data Collection Rule** is like the glue between a VM/s and a Log Analytics workspace/s. In it's rawest form, it has two parts:
+
+1. **Data Sources**:
+   
+   Unique source of monitoring data with its own format and method of exposing its data. Examples of a data source include Windows event log, performance counters, and syslog. Each data source matches a particular data source type as described below. 
+   
+   Each data source has a data source type. Each type defines a unique set of properties that must be specified for each data source.
+
+![](blobs/dataSource_windows_event_logs.png)
+
+![](blobs/dataSource_performance_counters.png)
+
+![](blobs/dataSource_extensions.png)
+
+![](blobs/dataSources.png)
+
+
+2. **Destinations**:
+
+    Set of destinations where the data should be sent. Examples include Log Analytics workspace and Azure Monitor Metrics. Multiple destinations are allowed for multi-homing scenario.
+
+   1. Azure Monitor Logs
+   2. Azure Monitor Metrics
+
+
+
+Setup a Log Analytics workspace for a subscription
+
+## Policy Initiative (aka. Policy Set Definition)
+
+Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule
+
+- Configure Windows virtual machines to run Azure Monitor Agent using system-assigned managed identity
+- Configure Windows Machines to be associated with a Data Collection Rule
 
 ### Extracting XPath queries from Windows Event Viewer
 
