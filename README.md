@@ -361,7 +361,7 @@ For this test, we'll be using a single Azure subscription and two virtual machin
    2. Assign this built-in **Policy Initiative** to either a **subscription** or a **resource group**
    3. It's a one to one mapping of this **Policy Assignment** to a **Data Collection Rule**
 
-From [here](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent?tabs=portal#how-data-collection-rule-associations-work), you can associate virtual machines to multiple **data collection rules**. This allows you to define each data collection rule to address a particular requirement, and associate the data collection rules to virtual machines based on the specific data you want to collect from each machine.
+Taken from [here](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent?tabs=portal#how-data-collection-rule-associations-work), it says you can associate virtual machines to multiple **data collection rules**. This allows you to define each data collection rule to address a particular requirement, and associate the data collection rules to virtual machines based on the specific data you want to collect from each machine.
 
 For example, consider an environment with a set of virtual machines running a line of business application and other virtual machines running SQL Server. You might have:
 
@@ -396,17 +396,44 @@ A **Data Collection Rule** is like the glue between a VM/s and a Log Analytics w
    1. Azure Monitor Logs
    2. Azure Monitor Metrics
 
+## Setup the test environment
 
+Two options here, you can either deploy the full shebang of everything automatically using **Bicep**:
 
-Setup a Log Analytics workspace for a subscription
+- Virtual Network
+- Virtual Machines
+- NSGs / NSG Rules
+- Public IP addresses
+- Azure Bastion
+- Log Analytics
+- Data Collection Rules
+- Storage accounts
+
+![](blobs/resource_groups01.png)
+
+...using [https://github.com/marckean/AzurePolicy/tree/main/TestEnvironment-Full](https://github.com/marckean/AzurePolicy/tree/main/TestEnvironment-Full)
+
+Or... you can click-ops the most part of it and just setup the bare minimum automatically using Bicep:
+
+- Log Analytics
+- Data Collection Rules
+
+...using [https://github.com/marckean/AzurePolicy/tree/main/TestLogAnalytics_DCR_only](https://github.com/marckean/AzurePolicy/tree/main/TestLogAnalytics_DCR_only)
+
+Either or, the Bicep file to deploy the Data Collection Rules is a derivative of [the data collection rules contained here](https://github.com/Azure/ausgovcaf-cloudsoe/blob/main/arm-cloudsoe-la-solutions.json#L166)
 
 ## Policy Initiative (aka. Policy Set Definition)
 
-Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule
+Policy is used to map the VMs to data collection rules. 
+
+The Policy Initiative that you need is... **Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule**
+
+Which contains the two Policy Definitions that you need:
 
 - Configure Windows virtual machines to run Azure Monitor Agent using system-assigned managed identity
 - Configure Windows Machines to be associated with a Data Collection Rule
 
+Simply assign this Policy Initiative to either a subscription or resource group. 
 ### Extracting XPath queries from Windows Event Viewer
 
 From [here](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent#extracting-xpath-queries-from-windows-event-viewer)
