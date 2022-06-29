@@ -400,6 +400,8 @@ A **Data Collection Rule** is like the glue between a VM/s and a Log Analytics w
 
 Two options here, you can either deploy the full shebang of everything automatically using **Bicep**:
 
+- Resource Groups
+  - Deployed for different resource types
 - Virtual Network
 - Virtual Machines
 - NSGs / NSG Rules
@@ -411,16 +413,19 @@ Two options here, you can either deploy the full shebang of everything automatic
 
 ![](blobs/resource_groups01.png)
 
-...using [https://github.com/marckean/AzurePolicy/tree/main/TestEnvironment-Full](https://github.com/marckean/AzurePolicy/tree/main/TestEnvironment-Full)
+...using the `deploy-AzureBicepResources.ps1` file in [https://github.com/marckean/AzurePolicy/tree/main/TestEnvironment-Full](https://github.com/marckean/AzurePolicy/tree/main/TestEnvironment-Full)
 
 Or... you can click-ops the most part of it and just setup the bare minimum automatically using Bicep:
 
+- Resource Group
 - Log Analytics
 - Data Collection Rules
 
-...using [https://github.com/marckean/AzurePolicy/tree/main/TestLogAnalytics_DCR_only](https://github.com/marckean/AzurePolicy/tree/main/TestLogAnalytics_DCR_only)
+...using the `deploy-AzureBicepResources.ps1` file in [https://github.com/marckean/AzurePolicy/tree/main/TestLogAnalytics_DCR_only](https://github.com/marckean/AzurePolicy/tree/main/TestLogAnalytics_DCR_only)
 
 Either or, the Bicep file to deploy the Data Collection Rules is a derivative of [the data collection rules contained here](https://github.com/Azure/ausgovcaf-cloudsoe/blob/main/arm-cloudsoe-la-solutions.json#L166)
+
+Check the top of the bicep files and the `deploy-AzureBicepResources.ps1` file, change the parameter & variable values to suit your environment. 
 
 ## Policy Initiative (aka. Policy Set Definition)
 
