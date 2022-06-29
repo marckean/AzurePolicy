@@ -9,7 +9,6 @@ var resourceGroups_var = [
   }
 ]
 
-
 // Tenant
 var subscriptionID = '7ac51792-8ea1-4ea8-be56-eb515e42aadf'
 

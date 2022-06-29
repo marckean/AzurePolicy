@@ -349,9 +349,32 @@ The **relativePath** property of Microsoft.Resources/deployments makes it easier
 
 The requirement is for Azure Monitor agents to be installed on VMs inside of Azure in an automatic fashion. Once a VM is deployed, then this VM is associated with one or more `destination` Log Analytics workspace/s with configuration as to what `dataSources` are configured for this VM. This is all controlled by a **Data Collection Rule**.
 
+## Overview for testing this
+
+For this test, we'll be using a single Azure subscription and two virtual machines
+
+1. Setup the Log Analytics workspace for a subscription where VMs will send their telemetry, thanks to a data collection rule
+2. Setup some VMs to be associated to the data collection rules
+3. Setup one or more data collection rules
+4. Use Azure Policy to map the VMs to respective Data Collection Rules
+   1. Use an built-in Policy Initiative `Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule`
+   2. Assign this built-in **Policy Initiative** to either a **subscription** or a **resource group**
+   3. It's a one to one mapping of this **Policy Assignment** to a **Data Collection Rule**
+
+From [here](https://docs.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-rule-azure-monitor-agent?tabs=portal#how-data-collection-rule-associations-work), you can associate virtual machines to multiple **data collection rules**. This allows you to define each data collection rule to address a particular requirement, and associate the data collection rules to virtual machines based on the specific data you want to collect from each machine.
+
+For example, consider an environment with a set of virtual machines running a line of business application and other virtual machines running SQL Server. You might have:
+
+- One default data collection rule that applies to all virtual machines.
+- Separate data collection rules that collect data specifically for the line of business application and for SQL Server.
+
+The following diagram illustrates the associations for the virtual machines to the data collection rules.
+
+![](blobs/data_collection_rules01.png)
+
 A **Data Collection Rule** is like the glue between a VM/s and a Log Analytics workspace/s. In it's rawest form, it has two parts:
 
-1. **Data Sources**:
+1. **[Data Sources](https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/data-collection-rule-structure#data-sources)**:
    
    Unique source of monitoring data with its own format and method of exposing its data. Examples of a data source include Windows event log, performance counters, and syslog. Each data source matches a particular data source type as described below. 
    
@@ -366,7 +389,7 @@ A **Data Collection Rule** is like the glue between a VM/s and a Log Analytics w
 ![](blobs/dataSources.png)
 
 
-2. **Destinations**:
+2. **[Destinations](https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/data-collection-rule-structure#destinations-1)**:
 
     Set of destinations where the data should be sent. Examples include Log Analytics workspace and Azure Monitor Metrics. Multiple destinations are allowed for multi-homing scenario.
 

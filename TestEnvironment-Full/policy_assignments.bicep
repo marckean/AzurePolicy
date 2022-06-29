@@ -3,13 +3,14 @@ param BuiltIn_PolicyDefinitionID string = '9575b8b7-78ab-4281-b53b-d3c1ace2260b'
 param location string = 'australiaeast'
 param ManagemantGroup string = 'Test'
 param DCR_ResourceGroupName string
+param DCR_Name string = 'AllSystemInformation'
 
 @description('Specifies the name of the policy assignment, can be used defined or an idempotent name as the defaultValue provides.')
 var policyAssignmentName01 = guid(BuiltIn_PolicyDefinitionID, subscription().displayName)
 var DefMgmtGroupLoc_var = tenantResourceId('Microsoft.Management/managementGroups', ManagemantGroup)
-//var Owner = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-var Contributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-//var Reader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+var Virtual_Machine_Contributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')
+var Monitoring_Contributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')
+var Log_Analytics_Contributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')
 var policyDefinitionName01 = 'Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule'
 var policyAssignmentDisplayName01 = 'Configure Windows machines to run Azure Monitor Agent and associate them to a Data Collection Rule'
 
@@ -31,16 +32,34 @@ resource policyAssignment01 'Microsoft.Authorization/policyAssignments@2021-06-0
         policyDefinitionId: tenantResourceId('Microsoft.Authorization/policySetDefinitions', BuiltIn_PolicyDefinitionID)
         parameters:{
             DcrResourceId: {
-                value: resourceId(subscription().subscriptionId, DCR_ResourceGroupName, 'Microsoft.Insights/dataCollectionRules', 'AllSystemInformation')
+                value: resourceId(subscription().subscriptionId, DCR_ResourceGroupName, 'Microsoft.Insights/dataCollectionRules', DCR_Name)
             }
         }
     }
 }
 
 resource roleAssignment01 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
-    name: guid('RoleAssignment', policyAssignmentName01, uniqueString(subscription().displayName))
+    name: guid('RoleAssignment01', policyAssignmentName01, uniqueString(subscription().displayName))
     properties: {
-        roleDefinitionId: Contributor
+        roleDefinitionId: Virtual_Machine_Contributor
+        principalType: 'ServicePrincipal'
+        principalId: reference(policyAssignment01.id, '2021-06-01', 'full').identity.principalId
+    }
+}
+
+resource roleAssignment02 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+    name: guid('RoleAssignment02', policyAssignmentName01, uniqueString(subscription().displayName))
+    properties: {
+        roleDefinitionId: Monitoring_Contributor
+        principalType: 'ServicePrincipal'
+        principalId: reference(policyAssignment01.id, '2021-06-01', 'full').identity.principalId
+    }
+}
+
+resource roleAssignment03 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+    name: guid('RoleAssignment03', policyAssignmentName01, uniqueString(subscription().displayName))
+    properties: {
+        roleDefinitionId: Log_Analytics_Contributor
         principalType: 'ServicePrincipal'
         principalId: reference(policyAssignment01.id, '2021-06-01', 'full').identity.principalId
     }
