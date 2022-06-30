@@ -359,7 +359,27 @@
                                         "exists": true
                                     },
                                     {
-                                        "anyOf": [ // Destination ports
+                                        "anyOf": [ // Destination ports is equal to 3389 or 22, or source address is ANY or intenet
+                                            {
+                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].sourceAddressPrefix",
+                                                "equals": "*"
+                                            },
+                                            {
+                                                "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].sourceAddressPrefix",
+                                                "equals": "Internet"
+                                            },
+                                            {
+                                                "not": {
+                                                    "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].sourceAddressPrefixes[*]",
+                                                    "notEquals": "*"
+                                                }
+                                            },
+                                            {
+                                                "not": {
+                                                    "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].sourceAddressPrefixes[*]",
+                                                    "notEquals": "Internet"
+                                                }
+                                            },
                                             {
                                                 "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
                                                 "equals": "22"
