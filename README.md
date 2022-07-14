@@ -21,6 +21,13 @@ Install the tools needed to work with Azure Policy with Azure & VS Code.
 ### Azure extension for VS Code
 
 > [!TIP]
+> The application ID for the service principal is **9cdead84-a844-4324-93f2-b2e6bb768d07**.
+
+> [!IMPORTANT]
+> You must have the `Microsoft.Authorization/roleAssignments/write` permission on your subscriptions in order to create and assign the custom role for the Azure Virtual Desktop service principal on those subscriptions. This is part of **User Access Administrator** and **Owner** built in roles.
+> 
+
+> [!TIP]
 > Install the Azure extension for VS Code, as per [here](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack).
 > Then sign into Azure.
 
