@@ -301,4 +301,7 @@ module bastion_01 './bastion.bicep' = {
     virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
     azureBastionPublicIpName: PIP_module.outputs.name
   }
+  dependsOn: [
+    virtual_Network_with_subnet_Module
+  ]
 }
