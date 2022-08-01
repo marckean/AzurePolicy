@@ -14,47 +14,10 @@ The two **child** templates `policyAssignments.json` and `policyDefinitions.json
 
 ![AzurePolicyDeploymentStructure](/blobs/AzurePolicyDeploymentStructure.png)
 
-## Tools
-
-Install the tools needed to work with Azure Policy with Azure & VS Code.
-
-### Azure extension for VS Code
 
 > [!TIP]
-> The application ID for the service principal is **9cdead84-a844-4324-93f2-b2e6bb768d07**.
+> Install the Azure extension for VS Code, as per [here](https://code.visualstudio.com/docs/azure/extensions). Then sign into Azure.
 
-> [!IMPORTANT]
-> You must have the `Microsoft.Authorization/roleAssignments/write` permission on your subscriptions in order to create and assign the custom role for the Azure Virtual Desktop service principal on those subscriptions. This is part of **User Access Administrator** and **Owner** built in roles.
-> 
-
-> [!TIP]
-> Install the Azure extension for VS Code, as per [here](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack).
-> Then sign into Azure.
-
-![](blobs/VSCode_AzureTools.png)
-
-#### Sign In
-
-To sign in to your Azure Account, simply press `F1` and type in Azure: `Sign in` (or click on the `Sign in to Azure`... node in the Explorer).
-
-![Sign in to Azure through the Command Palette](blobs/AzureTools_signin.png)
-
-> Note: You may be prompted for access to your computer's secure credential storage service (e.g. Keychain Access on MacOS or Windows Credential Manager) so you don't need to sign in every time you start VS Code.
-
-### Azure Policy extension for Visual Studio Code
-
-> [!TIP]
-> Install the Azure Policy extension for Visual Studio Code, as per [here](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/extension-for-vscode). 
-
-![](blobs/VSCode_AzurePolicy.png)
-
-### Install Bicep tools
-
-You can [install the Bicep CLI](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install) and add it to your PATH. You must manually install for any use other than Azure CLI. 
-
-Supported OS’s are Linux, MacOS, Windows.
-
-# This repo
 
 Recommendation would be to clone this repo so that it's local. To deploy all of this, we are using the following [PowerShell script](https://github.com/marckean/AzurePolicy/blob/main/deploy-AzureJSONResources.ps1) which copies the child templates to **Template Specs**, and then kicks off `deploy.json`:
 
@@ -115,7 +78,7 @@ Above we're using the deployment scope for the parent template `deploy.json` to 
 
 Policy **DeployIfNotExists** or **Modify** effect will take effect on any new or updated resources. Existing resources after they are scanned by the Policy Compliance Checker engine will need a remediation task kicked off or through code to get remediated. [From here](https://youtu.be/AVn5glYBz84?t=4279).
 
-Policy assignments must include a `managed identity` when assigning `Modify` policy definitions. Please see https://aka.ms/azurepolicyremediation for usage information.
+Policy assignments must include a 'managed identity' when assigning 'Modify' policy definitions. Please see https://aka.ms/azurepolicyremediation for usage information.
 
 [Remediate non-compliant resources with Azure Policy](https://aka.ms/azurepolicyremediation)
 
