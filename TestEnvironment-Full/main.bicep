@@ -35,30 +35,28 @@ var resourceGroups_var = [
 var virtualNetworks_var = [
   {
     name: 'Company_VirtualNetwork_01'
-    virtualNetworkName: 'Company_vNet_01'  
+    virtualNetworkName: 'Company_vNet_01'
     addressSpace_addressPrefixes: [
       '10.3.0.0/16'
     ]
-  }
-]
-
-// Subnets
-var subnets_var = [
-  {
-    name: 'Company_Subnet_01'
-    subnetName: 'First'
-    virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-    addressPrefix: '10.3.0.0/24'
-  }
-  {
-    name: 'Company_Subnet_02'
-    subnetName: 'AzureBastionSubnet'
-    virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-    addressPrefix: '10.3.250.0/26' 
+    subnets_var: [
+      {
+        name: 'Company_Subnet_01'
+        subnetName: 'First'
+        virtualNetworkName: 'Company_VirtualNetwork_01'
+        privateEndpointNetworkPolicies: 'Enabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
+        addressPrefix: '10.3.0.0/24'
+      }
+      {
+        name: 'Company_Subnet_02'
+        subnetName: 'AzureBastionSubnet'
+        virtualNetworkName: 'Company_VirtualNetwork_01'
+        privateEndpointNetworkPolicies: 'Enabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
+        addressPrefix: '10.3.250.0/26'
+      }
+    ]
   }
 ]
 
@@ -67,13 +65,13 @@ var nics_var = [
   {
     name: 'Company_NIC_01'
     virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
-    subnetName: subnets_var[0].subnetName
+    subnetName: virtualNetworks_var[0].subnets_var[0].subnetName
     networkInterfaceName: 'LA-Test-DCR-01-NIC'
   }
   {
     name: 'Company_NIC_02'
     virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
-    subnetName: subnets_var[0].subnetName
+    subnetName: virtualNetworks_var[0].subnets_var[0].subnetName
     networkInterfaceName: 'LA-Test-DCR-02-NIC'
   }
 ]
@@ -139,7 +137,6 @@ module resourceGroupModule './resource-group.bicep' = [for RG in resourceGroups_
 
 // Subscription scope
 
-
 // Resource Group scope
 module storageAcct './storage-account.bicep' = [for storageAccount in storageAccounts: {
   name: storageAccount.name
@@ -151,8 +148,11 @@ module storageAcct './storage-account.bicep' = [for storageAccount in storageAcc
     supportsHttpsTrafficOnly: storageAccount.supportsHttpsTrafficOnly
     allowBlobPublicAccess: storageAccount.allowBlobPublicAccess
     storageSku: storageSku
-    
+
   }
+  dependsOn: [
+    resourceGroupModule
+  ]
 }]
 
 // Resource Group scope
@@ -191,6 +191,9 @@ module nsg1 './nsg_rules.bicep' = {
   params: {
     location: resourceGroupModule[0].outputs.RGLocation
   }
+  dependsOn: [
+    resourceGroupModule
+  ]
 }
 
 // Resource Group scope
@@ -202,6 +205,9 @@ module kv1 './KeyVault.bicep' = {
     tenantID: tenantID
     objectID: userAssignedIdentity_02.outputs.principalId
   }
+  dependsOn: [
+    resourceGroupModule
+  ]
 }
 
 // Resource Group scope
@@ -211,6 +217,9 @@ module la1 './log-analytics.bicep' = {
   params: {
     location: resourceGroupModule[0].outputs.RGLocation
   }
+  dependsOn: [
+    resourceGroupModule
+  ]
 }
 
 // Subscription Group scope
@@ -232,8 +241,11 @@ module virtual_Network_with_subnet_Module './virtual_network_with_subnet.bicep' 
     location: resourceGroups_var[3].location
     virtualNetworkName: virtualNetwork.virtualNetworkName
     addressSpace_addressPrefixes: virtualNetwork.addressSpace_addressPrefixes
-    subnets: subnets_var
+    subnets: virtualNetwork.subnets_var
   }
+  dependsOn: [
+    resourceGroupModule
+  ]
 }]
 
 // Resource Group scope
@@ -246,6 +258,9 @@ module nic_module './network_interface_card.bicep' = [for nic in nics_var: {
     subnetName: nic.subnetName
     networkInterfaceName: nic.networkInterfaceName
   }
+  dependsOn: [
+    resourceGroupModule
+  ]
 }]
 
 // Resource Group scope
@@ -286,4 +301,7 @@ module bastion_01 './bastion.bicep' = {
     virtualNetworkName: virtualNetworks_var[0].virtualNetworkName
     azureBastionPublicIpName: PIP_module.outputs.name
   }
+  dependsOn: [
+    virtual_Network_with_subnet_Module
+  ]
 }
